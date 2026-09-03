@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width,initial-scale=1.0,user-scalable=no">
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no,
+               viewport-fit=cover">
 
 <title>NEON HEIST</title>
 
 <style>
-
 *{
     box-sizing:border-box;
-    margin:0;
-    padding:0;
+    -webkit-tap-highlight-color:transparent;
     user-select:none;
     -webkit-user-select:none;
-    -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
+    margin:0;
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#03030a;
+    background:#050510;
     font-family:Arial,Helvetica,sans-serif;
+    touch-action:none;
+}
+
+body{
+    position:fixed;
+    inset:0;
 }
 
 canvas{
@@ -32,228 +41,334 @@ canvas{
     width:100%;
     height:100%;
     display:block;
+    touch-action:none;
 }
-
-/* HUD */
 
 #hud{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    padding:10px;
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    flex-wrap:wrap;
+    top:10px;
+    left:10px;
+    right:10px;
     z-index:10;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+
     pointer-events:none;
 }
 
-.stat{
-    background:rgba(3,3,20,.82);
+.hudBox{
+    background:rgba(0,0,0,.65);
     border:1px solid #19f7ff;
-    border-radius:8px;
-    padding:7px 12px;
-    color:white;
-    font-weight:bold;
-    font-size:14px;
-    box-shadow:0 0 10px rgba(25,247,255,.3);
+    border-radius:12px;
+    padding:8px 12px;
+    text-shadow:0 0 8px #19f7ff;
 }
 
-/* Screens */
+#message{
+    position:fixed;
+    top:70px;
+    left:50%;
+    transform:translateX(-50%);
+
+    z-index:30;
+
+    color:white;
+    font-size:22px;
+    font-weight:bold;
+
+    text-align:center;
+
+    text-shadow:
+        0 0 8px #19f7ff,
+        0 0 20px #19f7ff;
+
+    pointer-events:none;
+}
 
 .screen{
     position:fixed;
     inset:0;
     z-index:50;
+
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
-    text-align:center;
+
     background:
-        radial-gradient(circle at center,#121246 0%,#050515 45%,#020208 100%);
+        radial-gradient(circle at center,
+        rgba(25,247,255,.15),
+        rgba(0,0,0,.95) 65%);
+
+    color:white;
+    text-align:center;
+}
+
+.panel{
+    width:min(90%,500px);
+    padding:30px;
+
+    border:2px solid #19f7ff;
+    border-radius:22px;
+
+    background:rgba(5,5,20,.92);
+
+    box-shadow:
+        0 0 25px rgba(25,247,255,.5),
+        inset 0 0 30px rgba(25,247,255,.08);
+}
+
+h1{
+    margin:0 0 10px;
+
+    font-size:48px;
+
+    color:#19f7ff;
+
+    text-shadow:
+        0 0 10px #19f7ff,
+        0 0 30px #19f7ff;
+}
+
+.subtitle{
+    color:#aaa;
+    margin-bottom:25px;
+}
+
+button{
+    border:none;
+    outline:none;
+
+    font-weight:bold;
+    color:white;
+
+    cursor:pointer;
+
+    touch-action:none;
+}
+
+.startButton{
+    padding:16px 35px;
+
+    border-radius:15px;
+
+    background:#19f7ff;
+    color:#001014;
+
+    font-size:20px;
+
+    box-shadow:0 0 20px rgba(25,247,255,.6);
+}
+
+.startButton:active{
+    transform:scale(.95);
 }
 
 .hidden{
     display:none!important;
 }
 
-h1{
-    font-size:clamp(48px,11vw,110px);
-    color:#19f7ff;
-    letter-spacing:5px;
-    text-shadow:
-        0 0 10px #19f7ff,
-        0 0 30px #19f7ff,
-        0 0 70px #19f7ff;
-}
-
-.logoSub{
-    color:#ff29dc;
-    font-size:clamp(16px,3vw,25px);
-    margin:10px 0 30px;
-    letter-spacing:4px;
-}
-
-.mainButton{
-    border:2px solid #19f7ff;
-    background:#19f7ff;
-    color:#02020a;
-    font-weight:bold;
-    font-size:20px;
-    padding:14px 38px;
-    border-radius:10px;
-    box-shadow:0 0 25px #19f7ff;
-    cursor:pointer;
-}
-
-.mainButton:active{
-    transform:scale(.95);
-}
-
-.instructions{
-    margin-top:28px;
-    color:#bbb;
-    line-height:1.8;
-    font-size:14px;
-    max-width:600px;
-    padding:0 20px;
-}
-
-.instructions strong{
-    color:#19f7ff;
-}
-
-#gameOverTitle{
-    color:#ff286e;
-    text-shadow:0 0 30px #ff286e;
-}
-
-/* Message */
-
-#message{
-    position:fixed;
-    top:75px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:15;
-    color:#19f7ff;
-    font-size:22px;
-    font-weight:bold;
-    text-align:center;
-    text-shadow:
-        0 0 8px #19f7ff,
-        0 0 20px #19f7ff;
-    pointer-events:none;
-    white-space:nowrap;
-}
-
-/* Mobile controls */
+/* =========================
+   IPAD / MOBILE CONTROLS
+========================= */
 
 #mobileControls{
     position:fixed;
     inset:0;
+
     z-index:20;
+
     pointer-events:none;
-    display:none;
+
+    display:block;
 }
+
+/* JOYSTICK */
 
 #joystick{
     position:absolute;
+
     left:25px;
     bottom:25px;
-    width:130px;
-    height:130px;
-    border:2px solid #19f7ff;
+
+    width:135px;
+    height:135px;
+
     border-radius:50%;
-    background:rgba(25,247,255,.07);
+
+    background:rgba(20,30,45,.65);
+
+    border:3px solid rgba(25,247,255,.8);
+
+    box-shadow:
+        0 0 20px rgba(25,247,255,.35),
+        inset 0 0 20px rgba(25,247,255,.15);
+
     pointer-events:auto;
+
+    touch-action:none;
 }
 
 #stick{
     position:absolute;
-    width:55px;
-    height:55px;
-    left:35px;
-    top:35px;
+
+    width:58px;
+    height:58px;
+
+    left:50%;
+    top:50%;
+
+    margin-left:-29px;
+    margin-top:-29px;
+
     border-radius:50%;
+
     background:#19f7ff;
-    box-shadow:0 0 20px #19f7ff;
+
+    box-shadow:
+        0 0 15px #19f7ff,
+        0 0 30px #19f7ff;
+
+    pointer-events:none;
 }
+
+/* BUTTONS */
 
 .mobileButton{
     position:absolute;
-    width:75px;
-    height:75px;
+
+    width:90px;
+    height:90px;
+
     border-radius:50%;
-    border:2px solid #ff29dc;
-    background:rgba(255,41,220,.15);
-    color:white;
-    font-weight:bold;
-    font-size:12px;
+
+    background:rgba(20,20,35,.8);
+
+    border:3px solid #ff2bd6;
+
+    color:#fff;
+
+    font-size:14px;
+
+    box-shadow:
+        0 0 15px rgba(255,43,214,.5);
+
     pointer-events:auto;
+
+    touch-action:none;
+}
+
+.mobileButton:active{
+    transform:scale(.9);
+    background:#ff2bd6;
 }
 
 #hackButton{
-    right:35px;
-    bottom:120px;
+    right:130px;
+    bottom:35px;
 }
 
 #dashButton{
-    right:120px;
-    bottom:35px;
+    right:25px;
+    bottom:115px;
+
+    border-color:#19f7ff;
+
+    box-shadow:
+        0 0 15px rgba(25,247,255,.5);
 }
 
 #pauseButton{
     position:fixed;
-    top:60px;
-    right:10px;
-    z-index:30;
-    background:rgba(3,3,20,.8);
-    color:white;
+
+    top:65px;
+    right:12px;
+
+    z-index:25;
+
+    width:45px;
+    height:45px;
+
+    border-radius:12px;
+
+    background:rgba(0,0,0,.7);
+
     border:1px solid #19f7ff;
-    border-radius:8px;
-    padding:8px 12px;
-    display:none;
+
+    color:white;
+
+    pointer-events:auto;
 }
 
-/* Desktop */
+/* LANDSCAPE IPAD */
 
-@media (min-width:800px){
-    #mobileControls{
-        display:none!important;
+@media (orientation:landscape) and (max-height:600px){
+
+    #joystick{
+        width:115px;
+        height:115px;
+
+        left:20px;
+        bottom:18px;
     }
 
-    #pauseButton{
-        display:block;
+    #stick{
+        width:52px;
+        height:52px;
+
+        margin-left:-26px;
+        margin-top:-26px;
+    }
+
+    .mobileButton{
+        width:75px;
+        height:75px;
+    }
+
+    #hackButton{
+        right:110px;
+        bottom:20px;
+    }
+
+    #dashButton{
+        right:20px;
+        bottom:95px;
     }
 }
 
-/* Mobile */
+/* SMALL PHONES */
 
-@media (max-width:799px){
+@media (max-width:420px){
 
-    #mobileControls{
-        display:block;
+    #joystick{
+        width:120px;
+        height:120px;
+
+        left:15px;
+        bottom:18px;
     }
 
-    #pauseButton{
-        display:block;
-    }
-
-    .stat{
+    .mobileButton{
+        width:75px;
+        height:75px;
         font-size:12px;
-        padding:6px 9px;
     }
 
-    #message{
-        top:95px;
-        font-size:18px;
+    #hackButton{
+        right:95px;
+        bottom:20px;
+    }
+
+    #dashButton{
+        right:15px;
+        bottom:100px;
     }
 }
-
 </style>
 </head>
 
@@ -261,73 +376,61 @@ h1{
 
 <canvas id="game"></canvas>
 
-<!-- HUD -->
-
 <div id="hud">
 
-    <div class="stat">
-        💰 CASH: <span id="cash">0</span>
+    <div class="hudBox">
+        LEVEL: <span id="level">1</span>
     </div>
 
-    <div class="stat">
-        ⭐ SCORE: <span id="score">0</span>
+    <div class="hudBox">
+        💰 <span id="cash">0</span>
     </div>
 
-    <div class="stat">
-        ⏱ TIME: <span id="time">0</span>
+    <div class="hudBox">
+        ❤️ <span id="lives">3</span>
     </div>
 
-    <div class="stat">
-        🧩 LEVEL: <span id="level">1</span>
-    </div>
-
-    <div class="stat">
-        ❤️ LIVES: <span id="lives">3</span>
-    </div>
-
-    <div class="stat">
-        🚨 ALERT: <span id="alert">0</span>%
+    <div class="hudBox">
+        SCORE: <span id="score">0</span>
     </div>
 
 </div>
 
 <div id="message"></div>
 
-<button id="pauseButton">PAUSE</button>
+<button id="pauseButton">Ⅱ</button>
 
-<!-- START -->
+<!-- START SCREEN -->
 
 <div id="startScreen" class="screen">
 
-    <h1>NEON HEIST</h1>
+    <div class="panel">
 
-    <div class="logoSub">
-        STEAL • HACK • ESCAPE
-    </div>
+        <h1>NEON HEIST</h1>
 
-    <button class="mainButton" id="startButton">
-        START HEIST
-    </button>
+        <div class="subtitle">
+            Steal the loot. Avoid the guards. Escape.
+        </div>
 
-    <div class="instructions">
+        <p>
+            🎮 Use the joystick to move
+        </p>
 
-        <strong>PC</strong><br>
-        WASD / Arrow Keys = Move<br>
-        SHIFT = Dash<br>
-        E / SPACE = Hack<br>
-        P = Pause
+        <p>
+            🔓 Hack terminals
+        </p>
 
-        <br><br>
+        <p>
+            💰 Collect the money
+        </p>
 
-        <strong>MOBILE / iPAD</strong><br>
-        Use the joystick to move<br>
-        HACK to hack terminals<br>
-        DASH to dash
+        <p>
+            🚨 Don't get caught
+        </p>
 
-        <br><br>
-
-        Hack every terminal, steal the money<br>
-        and reach the green extraction zone.
+        <button class="startButton" id="startButton">
+            START HEIST
+        </button>
 
     </div>
 
@@ -337,25 +440,29 @@ h1{
 
 <div id="gameOverScreen" class="screen hidden">
 
-    <h1 id="gameOverTitle">
-        HEIST FAILED
-    </h1>
+    <div class="panel">
 
-    <div class="logoSub">
-        THE CITY CAUGHT YOU
+        <h1>CAUGHT!</h1>
+
+        <p>
+            Final Score:
+            <strong id="finalScore">0</strong>
+        </p>
+
+        <p>
+            Level Reached:
+            <strong id="finalLevel">1</strong>
+        </p>
+
+        <button class="startButton" id="restartButton">
+            TRY AGAIN
+        </button>
+
     </div>
-
-    <div style="margin-bottom:25px;font-size:20px;">
-        SCORE: <span id="finalScore">0</span>
-    </div>
-
-    <button class="mainButton" id="restartButton">
-        TRY AGAIN
-    </button>
 
 </div>
 
-<!-- MOBILE -->
+<!-- MOBILE CONTROLS -->
 
 <div id="mobileControls">
 
@@ -363,11 +470,15 @@ h1{
         <div id="stick"></div>
     </div>
 
-    <button class="mobileButton" id="hackButton">
+    <button
+        class="mobileButton"
+        id="hackButton">
         HACK
     </button>
 
-    <button class="mobileButton" id="dashButton">
+    <button
+        class="mobileButton"
+        id="dashButton">
         DASH
     </button>
 
@@ -375,88 +486,39 @@ h1{
 
 <script>
 
-/* =========================================================
-   CANVAS
-========================================================= */
-
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 let W = window.innerWidth;
 let H = window.innerHeight;
 
-function resize(){
+function resizeCanvas(){
+
+    const dpr = Math.min(window.devicePixelRatio || 1,2);
 
     W = window.innerWidth;
     H = window.innerHeight;
 
-    canvas.width = W * devicePixelRatio;
-    canvas.height = H * devicePixelRatio;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
 
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
 
-    ctx.setTransform(
-        devicePixelRatio,
-        0,
-        0,
-        devicePixelRatio,
-        0,
-        0
-    );
+    ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 
-window.addEventListener("resize",resize);
-resize();
+window.addEventListener("resize",resizeCanvas);
+window.addEventListener("orientationchange",()=>{
+    setTimeout(resizeCanvas,200);
+});
+
+resizeCanvas();
 
 
-/* =========================================================
-   UI
-========================================================= */
-
-const startScreen =
-    document.getElementById("startScreen");
-
-const gameOverScreen =
-    document.getElementById("gameOverScreen");
-
-const startButton =
-    document.getElementById("startButton");
-
-const restartButton =
-    document.getElementById("restartButton");
-
-const pauseButton =
-    document.getElementById("pauseButton");
-
-const cashText =
-    document.getElementById("cash");
-
-const scoreText =
-    document.getElementById("score");
-
-const timeText =
-    document.getElementById("time");
-
-const levelText =
-    document.getElementById("level");
-
-const livesText =
-    document.getElementById("lives");
-
-const alertText =
-    document.getElementById("alert");
-
-const finalScore =
-    document.getElementById("finalScore");
-
-const message =
-    document.getElementById("message");
-
-
-/* =========================================================
+/* =========================
    GAME VARIABLES
-========================================================= */
+========================= */
 
 let running = false;
 let paused = false;
@@ -466,30 +528,16 @@ let score = 0;
 let cash = 0;
 let lives = 3;
 
-let highScore =
-    Number(localStorage.getItem("neonHeistHighScore")) || 0;
-
-let gameTime = 0;
-
-let alertLevel = 0;
-
 let alarm = false;
+let alertLevel = 0;
 
 let transitioningLevel = false;
 
-let messageTimer = 0;
-
-
-/* =========================================================
-   WORLD
-========================================================= */
-
 let walls = [];
 let loot = [];
-let terminals = [];
 let guards = [];
+let terminals = [];
 let particles = [];
-let powerups = [];
 
 let exit = {
     x:0,
@@ -498,9 +546,9 @@ let exit = {
 };
 
 
-/* =========================================================
+/* =========================
    PLAYER
-========================================================= */
+========================= */
 
 const player = {
 
@@ -514,20 +562,18 @@ const player = {
     vx:0,
     vy:0,
 
-    dashPower:550,
-
     dashCooldown:0,
 
-    invincible:0,
+    invincible:1,
 
     invisibility:0
 
 };
 
 
-/* =========================================================
+/* =========================
    INPUT
-========================================================= */
+========================= */
 
 const keys = {};
 
@@ -536,75 +582,59 @@ window.addEventListener("keydown",e=>{
     keys[e.key.toLowerCase()] = true;
 
     if(
-        e.key === " " ||
-        e.key === "ArrowUp" ||
-        e.key === "ArrowDown" ||
-        e.key === "ArrowLeft" ||
-        e.key === "ArrowRight"
+        ["arrowup","arrowdown","arrowleft","arrowright"," "]
+        .includes(e.key.toLowerCase())
     ){
         e.preventDefault();
-    }
-
-    if(e.key.toLowerCase() === "p"){
-        togglePause();
     }
 
 });
 
 window.addEventListener("keyup",e=>{
-
     keys[e.key.toLowerCase()] = false;
-
 });
 
 
-/* =========================================================
-   MOBILE JOYSTICK
-========================================================= */
+/* =========================
+   JOYSTICK
+========================= */
 
 let joystickActive = false;
-
 let joystickX = 0;
 let joystickY = 0;
 
-const joystick =
-    document.getElementById("joystick");
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
 
-const stick =
-    document.getElementById("stick");
 
 function updateJoystick(clientX,clientY){
 
-    const rect =
-        joystick.getBoundingClientRect();
+    const rect = joystick.getBoundingClientRect();
 
-    const cx =
-        rect.left + rect.width/2;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
 
-    const cy =
-        rect.top + rect.height/2;
+    let dx = clientX - cx;
+    let dy = clientY - cy;
 
-    let dx = clientX-cx;
-    let dy = clientY-cy;
+    const max = rect.width * 0.31;
 
-    const max = 42;
-
-    const distance =
-        Math.hypot(dx,dy);
+    const distance = Math.hypot(dx,dy);
 
     if(distance > max){
 
-        dx = dx/distance*max;
-        dy = dy/distance*max;
+        dx = dx / distance * max;
+        dy = dy / distance * max;
 
     }
 
-    joystickX = dx/max;
-    joystickY = dy/max;
+    joystickX = dx / max;
+    joystickY = dy / max;
 
     stick.style.transform =
         `translate(${dx}px,${dy}px)`;
 }
+
 
 function resetJoystick(){
 
@@ -617,516 +647,63 @@ function resetJoystick(){
         "translate(0,0)";
 }
 
+
 joystick.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
 
     joystickActive = true;
 
     joystick.setPointerCapture(e.pointerId);
 
-    updateJoystick(
-        e.clientX,
-        e.clientY
-    );
+    updateJoystick(e.clientX,e.clientY);
 
 });
+
 
 joystick.addEventListener("pointermove",e=>{
 
-    if(joystickActive){
+    if(!joystickActive) return;
 
-        updateJoystick(
-            e.clientX,
-            e.clientY
-        );
+    e.preventDefault();
 
-    }
+    updateJoystick(e.clientX,e.clientY);
 
 });
 
-joystick.addEventListener("pointerup",resetJoystick);
+
+joystick.addEventListener("pointerup",e=>{
+
+    e.preventDefault();
+
+    resetJoystick();
+
+});
+
+
 joystick.addEventListener("pointercancel",resetJoystick);
 
 
-/* =========================================================
-   MOBILE BUTTONS
-========================================================= */
-
-document.getElementById("dashButton")
-.addEventListener("pointerdown",()=>{
-
-    dash();
-
-});
-
-document.getElementById("hackButton")
-.addEventListener("pointerdown",()=>{
-
-    hack();
-
-});
-
-
-/* =========================================================
-   RANDOM
-========================================================= */
-
-function random(min,max){
-
-    return Math.random()*(max-min)+min;
-
-}
-
-function randomInt(min,max){
-
-    return Math.floor(
-        random(min,max+1)
-    );
-
-}
-
-
-/* =========================================================
-   DISTANCE
-========================================================= */
-
-function distance(a,b){
-
-    return Math.hypot(
-        a.x-b.x,
-        a.y-b.y
-    );
-
-}
-
-
-/* =========================================================
-   COLLISION
-========================================================= */
-
-function circleRectCollision(
-    cx,cy,r,rect
-){
-
-    const closestX =
-        Math.max(
-            rect.x,
-            Math.min(cx,rect.x+rect.w)
-        );
-
-    const closestY =
-        Math.max(
-            rect.y,
-            Math.min(cy,rect.y+rect.h)
-        );
-
-    const dx = cx-closestX;
-    const dy = cy-closestY;
-
-    return dx*dx+dy*dy < r*r;
-}
-
-
-function collidesWithWalls(x,y,r){
-
-    for(const wall of walls){
-
-        if(
-            circleRectCollision(
-                x,
-                y,
-                r,
-                wall
-            )
-        ){
-
-            return true;
-
-        }
-
-    }
-
-    return false;
-}
-
-
-/* =========================================================
-   SAFE POSITION
-========================================================= */
-
-function safePosition(radius=18){
-
-    for(let attempt=0;attempt<500;attempt++){
-
-        const x =
-            random(
-                50,
-                Math.max(51,W-50)
-            );
-
-        const y =
-            random(
-                80,
-                Math.max(81,H-50)
-            );
-
-        if(
-            !collidesWithWalls(
-                x,
-                y,
-                radius
-            )
-        ){
-
-            return {x,y};
-
-        }
-
-    }
-
-    return {
-        x:80,
-        y:100
-    };
-
-}
-
-
-/* =========================================================
-   LEVEL CREATION
-========================================================= */
-
-function createLevel(){
-
-    /* CLEAR OLD LEVEL */
-
-    walls = [];
-    loot = [];
-    terminals = [];
-    guards = [];
-    particles = [];
-    powerups = [];
-
-    alarm = false;
-    alertLevel = 0;
-
-    gameTime = Math.max(
-        45,
-        105 - level*2
-    );
-
-    /* =====================================================
-       WALLS
-    ===================================================== */
-
-    const wallCount =
-        Math.min(
-            7 + level,
-            24
-        );
-
-    for(let i=0;i<wallCount;i++){
-
-        let wall;
-        let valid = false;
-
-        for(let attempt=0;attempt<100;attempt++){
-
-            wall = {
-
-                x:random(40,W-180),
-
-                y:random(100,H-160),
-
-                w:random(70,180),
-
-                h:random(20,45)
-
-            };
-
-            /* Keep away from spawn area */
-
-            const spawnDistance =
-                Math.hypot(
-                    wall.x-80,
-                    wall.y-130
-                );
-
-            if(spawnDistance < 130){
-                continue;
-            }
-
-            let overlap = false;
-
-            for(const other of walls){
-
-                if(
-                    wall.x < other.x+other.w &&
-                    wall.x+wall.w > other.x &&
-                    wall.y < other.y+other.h &&
-                    wall.y+wall.h > other.y
-                ){
-
-                    overlap = true;
-                    break;
-
-                }
-
-            }
-
-            if(!overlap){
-
-                valid = true;
-                break;
-
-            }
-
-        }
-
-        if(valid){
-            walls.push(wall);
-        }
-
-    }
-
-
-    /* =====================================================
-       PLAYER SAFE SPAWN
-    ===================================================== */
-
-    let spawn = safePosition(20);
-
-    player.x = spawn.x;
-    player.y = spawn.y;
-
-    player.vx = 0;
-    player.vy = 0;
-
-    player.dashCooldown = 0;
-    player.invincible = 1;
-    player.invisibility = 0;
-
-
-    /* =====================================================
-       EXIT
-    ===================================================== */
-
-    let exitPosition;
-
-    for(let attempt=0;attempt<200;attempt++){
-
-        exitPosition = safePosition(30);
-
-        if(
-            Math.hypot(
-                exitPosition.x-player.x,
-                exitPosition.y-player.y
-            ) > 350
-        ){
-
-            break;
-
-        }
-
-    }
-
-    exit.x = exitPosition.x;
-    exit.y = exitPosition.y;
-
-
-    /* =====================================================
-       LOOT
-    ===================================================== */
-
-    const lootCount =
-        Math.min(
-            4 + Math.floor(level*0.6),
-            15
-        );
-
-    for(let i=0;i<lootCount;i++){
-
-        const pos =
-            safePosition(16);
-
-        loot.push({
-
-            x:pos.x,
-            y:pos.y,
-
-            r:10,
-
-            value:randomInt(
-                50,
-                150 + level*10
-            ),
-
-            collected:false
-
-        });
-
-    }
-
-
-    /* =====================================================
-       TERMINALS
-    ===================================================== */
-
-    const terminalCount =
-        Math.min(
-            1 + Math.floor((level-1)/3),
-            4
-        );
-
-    for(let i=0;i<terminalCount;i++){
-
-        const pos =
-            safePosition(18);
-
-        terminals.push({
-
-            x:pos.x,
-            y:pos.y,
-
-            r:18,
-
-            hacked:false
-
-        });
-
-    }
-
-
-    /* =====================================================
-       GUARDS
-    ===================================================== */
-
-    const guardCount =
-        Math.min(
-            1 + Math.floor(level/2),
-            12
-        );
-
-    for(let i=0;i<guardCount;i++){
-
-        let pos = safePosition(16);
-
-        let tries = 0;
-
-        while(
-            Math.hypot(
-                pos.x-player.x,
-                pos.y-player.y
-            ) < 250 &&
-            tries < 50
-        ){
-
-            pos = safePosition(16);
-            tries++;
-
-        }
-
-        guards.push({
-
-            x:pos.x,
-            y:pos.y,
-
-            r:13,
-
-            speed:
-                45 + level*2,
-
-            angle:
-                random(0,Math.PI*2),
-
-            visionRange:
-                150 + level*3,
-
-            visionAngle:
-                Math.PI/3,
-
-            state:"patrol",
-
-            chaseTimer:0,
-
-            turnTimer:random(1,3)
-
-        });
-
-    }
-
-
-    /* =====================================================
-       POWERUPS
-    ===================================================== */
-
-    if(level >= 2){
-
-        const pos =
-            safePosition(14);
-
-        powerups.push({
-
-            x:pos.x,
-            y:pos.y,
-
-            r:12,
-
-            type:
-                Math.random()<.5
-                ? "speed"
-                : "invisible",
-
-            collected:false
-
-        });
-
-    }
-
-    updateHUD();
-
-    showMessage(
-        "LEVEL " + level
-    );
-
-}
-
-
-/* =========================================================
-   INPUT MOVEMENT
-========================================================= */
+/* =========================
+   MOVEMENT
+========================= */
 
 function getMovement(){
 
     let x = 0;
     let y = 0;
 
-    if(
-        keys["w"] ||
-        keys["arrowup"]
-    ){
+    if(keys["w"] || keys["arrowup"])
         y -= 1;
-    }
 
-    if(
-        keys["s"] ||
-        keys["arrowdown"]
-    ){
+    if(keys["s"] || keys["arrowdown"])
         y += 1;
-    }
 
-    if(
-        keys["a"] ||
-        keys["arrowleft"]
-    ){
+    if(keys["a"] || keys["arrowleft"])
         x -= 1;
-    }
 
-    if(
-        keys["d"] ||
-        keys["arrowright"]
-    ){
+    if(keys["d"] || keys["arrowright"])
         x += 1;
-    }
 
     if(joystickActive){
 
@@ -1135,954 +712,274 @@ function getMovement(){
 
     }
 
-    const len =
-        Math.hypot(x,y);
+    const length = Math.hypot(x,y);
 
-    if(len > 0){
+    if(length > 0){
 
-        x /= len;
-        y /= len;
+        x /= length;
+        y /= length;
 
     }
 
     return {x,y};
-
 }
 
 
-/* =========================================================
-   MOVE PLAYER
-========================================================= */
+/* =========================
+   COLLISION
+========================= */
 
-function movePlayer(dt){
+function circleRectCollision(cx,cy,r,rect){
 
-    if(transitioningLevel){
-        return;
-    }
+    const closestX =
+        Math.max(rect.x,Math.min(cx,rect.x+rect.w));
 
-    const movement =
-        getMovement();
+    const closestY =
+        Math.max(rect.y,Math.min(cy,rect.y+rect.h));
 
-    let speed =
-        player.speed;
+    const dx = cx - closestX;
+    const dy = cy - closestY;
 
-    if(player.invisibility > 0){
-        speed *= .9;
-    }
-
-    let nx =
-        player.x +
-        movement.x *
-        speed *
-        dt;
-
-    let ny =
-        player.y +
-        movement.y *
-        speed *
-        dt;
-
-
-    /* X collision */
-
-    if(
-        !collidesWithWalls(
-            nx,
-            player.y,
-            player.r
-        )
-    ){
-
-        player.x = nx;
-
-    }
-
-
-    /* Y collision */
-
-    if(
-        !collidesWithWalls(
-            player.x,
-            ny,
-            player.r
-        )
-    ){
-
-        player.y = ny;
-
-    }
-
-
-    /* Screen boundaries */
-
-    player.x =
-        Math.max(
-            player.r,
-            Math.min(
-                W-player.r,
-                player.x
-            )
-        );
-
-    player.y =
-        Math.max(
-            70+player.r,
-            Math.min(
-                H-player.r,
-                player.y
-            )
-        );
-
+    return dx*dx + dy*dy < r*r;
 }
 
 
-/* =========================================================
-   DASH
-========================================================= */
+function isBlocked(x,y,r){
 
-function dash(){
+    for(const wall of walls){
 
-    if(
-        !running ||
-        paused ||
-        transitioningLevel
-    ){
-        return;
-    }
-
-    if(player.dashCooldown > 0){
-        return;
-    }
-
-    const movement =
-        getMovement();
-
-    let dx = movement.x;
-    let dy = movement.y;
-
-    if(dx===0 && dy===0){
-
-        dx = 1;
-        dy = 0;
+        if(circleRectCollision(x,y,r,wall))
+            return true;
 
     }
 
-    const steps = 15;
-
-    for(let i=0;i<steps;i++){
-
-        const nx =
-            player.x +
-            dx *
-            player.dashPower /
-            steps;
-
-        const ny =
-            player.y +
-            dy *
-            player.dashPower /
-            steps;
-
-        if(
-            !collidesWithWalls(
-                nx,
-                ny,
-                player.r
-            )
-        ){
-
-            player.x = nx;
-            player.y = ny;
-
-            spawnParticles(
-                player.x,
-                player.y,
-                "#19f7ff",
-                2
-            );
-
-        }else{
-
-            break;
-
-        }
-
-    }
-
-    player.dashCooldown = 2;
-
-    player.invincible = .35;
-
+    return false;
 }
 
 
-/* =========================================================
-   HACK
-========================================================= */
+/* =========================
+   SAFE POSITION
+========================= */
 
-function hack(){
+function safePosition(r=20){
 
-    if(
-        !running ||
-        paused ||
-        transitioningLevel
-    ){
-        return;
-    }
-
-    for(const terminal of terminals){
-
-        if(terminal.hacked){
-            continue;
-        }
-
-        if(
-            distance(
-                player,
-                terminal
-            ) < 55
-        ){
-
-            terminal.hacked = true;
-
-            score += 100 * level;
-
-            gameTime += 8;
-
-            alertLevel =
-                Math.max(
-                    0,
-                    alertLevel-25
-                );
-
-            spawnParticles(
-                terminal.x,
-                terminal.y,
-                "#ff29dc",
-                30
-            );
-
-            showMessage(
-                "TERMINAL HACKED! +" +
-                100*level
-            );
-
-            return;
-
-        }
-
-    }
-
-    showMessage(
-        "GET CLOSER TO A TERMINAL"
-    );
-
-}
-
-
-/* =========================================================
-   GUARD VISION
-========================================================= */
-
-function guardCanSeePlayer(guard){
-
-    if(player.invisibility > 0){
-        return false;
-    }
-
-    const dx =
-        player.x-guard.x;
-
-    const dy =
-        player.y-guard.y;
-
-    const dist =
-        Math.hypot(dx,dy);
-
-    if(dist > guard.visionRange){
-        return false;
-    }
-
-    const angle =
-        Math.atan2(dy,dx);
-
-    let difference =
-        Math.abs(
-            normalizeAngle(
-                angle-guard.angle
-            )
-        );
-
-    if(
-        difference >
-        guard.visionAngle/2
-    ){
-        return false;
-    }
-
-    /* Check walls */
-
-    const steps =
-        Math.ceil(dist/12);
-
-    for(let i=1;i<steps;i++){
-
-        const t = i/steps;
+    for(let i=0;i<300;i++){
 
         const x =
-            guard.x+dx*t;
+            40 + Math.random() * (W-80);
 
         const y =
-            guard.y+dy*t;
+            90 + Math.random() * (H-130);
 
-        if(
-            collidesWithWalls(
-                x,
-                y,
-                3
-            )
-        ){
+        if(isBlocked(x,y,r))
+            continue;
 
-            return false;
+        if(Math.hypot(x-player.x,y-player.y)<100)
+            continue;
 
-        }
+        return {x,y};
 
     }
 
-    return true;
-
+    return {
+        x:W/2,
+        y:H/2
+    };
 }
 
 
-function normalizeAngle(a){
+/* =========================
+   CREATE LEVEL
+========================= */
 
-    while(a > Math.PI){
-        a -= Math.PI*2;
-    }
+function createLevel(){
 
-    while(a < -Math.PI){
-        a += Math.PI*2;
-    }
-
-    return a;
-
-}
-
-
-/* =========================================================
-   GUARDS
-========================================================= */
-
-function updateGuards(dt){
-
-    for(const guard of guards){
-
-        if(
-            guardCanSeePlayer(guard)
-        ){
-
-            guard.state = "chase";
-
-            guard.chaseTimer = 2.5;
-
-            alertLevel +=
-                30 * dt;
-
-        }else{
-
-            guard.chaseTimer -= dt;
-
-            if(guard.chaseTimer <= 0){
-
-                guard.state = "patrol";
-
-            }
-
-        }
-
-
-        if(guard.state === "chase"){
-
-            const dx =
-                player.x-guard.x;
-
-            const dy =
-                player.y-guard.y;
-
-            const dist =
-                Math.hypot(dx,dy);
-
-            if(dist > 0){
-
-                guard.angle =
-                    Math.atan2(dy,dx);
-
-                const nx =
-                    guard.x +
-                    dx/dist *
-                    guard.speed *
-                    1.7 *
-                    dt;
-
-                const ny =
-                    guard.y +
-                    dy/dist *
-                    guard.speed *
-                    1.7 *
-                    dt;
-
-                if(
-                    !collidesWithWalls(
-                        nx,
-                        guard.y,
-                        guard.r
-                    )
-                ){
-                    guard.x = nx;
-                }
-
-                if(
-                    !collidesWithWalls(
-                        guard.x,
-                        ny,
-                        guard.r
-                    )
-                ){
-                    guard.y = ny;
-                }
-
-            }
-
-        }else{
-
-            guard.turnTimer -= dt;
-
-            if(guard.turnTimer <= 0){
-
-                guard.turnTimer =
-                    random(1,3);
-
-                guard.angle +=
-                    random(
-                        -.9,
-                        .9
-                    );
-
-            }
-
-            const nx =
-                guard.x +
-                Math.cos(
-                    guard.angle
-                ) *
-                guard.speed *
-                dt;
-
-            const ny =
-                guard.y +
-                Math.sin(
-                    guard.angle
-                ) *
-                guard.speed *
-                dt;
-
-            if(
-                collidesWithWalls(
-                    nx,
-                    ny,
-                    guard.r
-                ) ||
-                nx < guard.r ||
-                nx > W-guard.r ||
-                ny < 70+guard.r ||
-                ny > H-guard.r
-            ){
-
-                guard.angle +=
-                    Math.PI *
-                    random(.4,.9);
-
-            }else{
-
-                guard.x = nx;
-                guard.y = ny;
-
-            }
-
-        }
-
-
-        /* Guard collision */
-
-        if(
-            distance(
-                player,
-                guard
-            ) <
-            player.r+guard.r
-        ){
-
-            hitPlayer();
-
-        }
-
-    }
-
-    alertLevel =
-        Math.max(
-            0,
-            alertLevel -
-            (alarm ? 0 : 8*dt)
-        );
-
-    if(alertLevel >= 100){
-
-        alarm = true;
-
-    }
-
-}
-
-
-/* =========================================================
-   PLAYER DAMAGE
-========================================================= */
-
-function hitPlayer(){
-
-    if(player.invincible > 0){
-        return;
-    }
-
-    player.invincible = 1.5;
-
-    lives--;
-
-    alertLevel = 0;
+    walls = [];
+    loot = [];
+    guards = [];
+    terminals = [];
+    particles = [];
 
     alarm = false;
-
-    spawnParticles(
-        player.x,
-        player.y,
-        "#ff286e",
-        35
-    );
-
-    if(lives <= 0){
-
-        endGame();
-
-        return;
-
-    }
-
-    showMessage(
-        "CAUGHT! LIVES LEFT: " +
-        lives
-    );
-
-    const pos =
-        safePosition(20);
-
-    player.x = pos.x;
-    player.y = pos.y;
-
-}
-
-
-/* =========================================================
-   LOOT
-========================================================= */
-
-function updateLoot(){
-
-    for(const item of loot){
-
-        if(item.collected){
-            continue;
-        }
-
-        if(
-            distance(
-                player,
-                item
-            ) <
-            player.r+item.r+5
-        ){
-
-            item.collected = true;
-
-            cash += item.value;
-
-            score += item.value;
-
-            spawnParticles(
-                item.x,
-                item.y,
-                "#ffe600",
-                20
-            );
-
-            showMessage(
-                "STOLEN! +$" +
-                item.value
-            );
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   POWERUPS
-========================================================= */
-
-function updatePowerups(){
-
-    for(const power of powerups){
-
-        if(power.collected){
-            continue;
-        }
-
-        if(
-            distance(
-                player,
-                power
-            ) <
-            player.r+power.r+5
-        ){
-
-            power.collected = true;
-
-            if(power.type === "speed"){
-
-                player.speed = 280;
-
-                showMessage(
-                    "SPEED BOOST!"
-                );
-
-                setTimeout(()=>{
-
-                    player.speed = 190;
-
-                },6000);
-
-            }
-
-            if(power.type === "invisible"){
-
-                player.invisibility = 6;
-
-                showMessage(
-                    "INVISIBILITY!"
-                );
-
-            }
-
-            spawnParticles(
-                power.x,
-                power.y,
-                "#a855ff",
-                25
-            );
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   EXIT
-========================================================= */
-
-function checkExit(){
-
-    if(
-        distance(
-            player,
-            exit
-        ) <
-        player.r+exit.r
-    ){
-
-        const allHacked =
-            terminals.every(
-                t=>t.hacked
-            );
-
-        if(!allHacked){
-
-            showMessage(
-                "HACK ALL TERMINALS FIRST!"
-            );
-
-            return;
-
-        }
-
-        if(alarm){
-
-            showMessage(
-                "LOSE THE ALARM FIRST!"
-            );
-
-            return;
-
-        }
-
-        levelComplete();
-
-    }
-
-}
-
-
-/* =========================================================
-   LEVEL COMPLETE
-========================================================= */
-
-function levelComplete(){
-
-    /* THIS IS THE IMPORTANT FIX */
-
-    if(transitioningLevel){
-        return;
-    }
-
-    transitioningLevel = true;
-
-
-    const reward =
-        cash * 2;
-
-    score += reward;
-
-
-    if(score > highScore){
-
-        highScore = score;
-
-        localStorage.setItem(
-            "neonHeistHighScore",
-            highScore
-        );
-
-    }
-
-
-    spawnParticles(
-        exit.x,
-        exit.y,
-        "#19f7ff",
-        70
-    );
-
-
-    showMessage(
-        "HEIST COMPLETE! +" +
-        reward
-    );
-
-
-    /* Completely stop movement */
+    alertLevel = 0;
 
     player.vx = 0;
     player.vy = 0;
 
+    player.invincible = 1;
 
-    setTimeout(()=>{
+    /* PLAYER SPAWN */
 
-        if(!running){
+    player.x = 70;
+    player.y = H/2;
 
-            transitioningLevel = false;
+    /* WALLS */
 
-            return;
+    const wallCount =
+        Math.min(5 + level,16);
+
+    for(let i=0;i<wallCount;i++){
+
+        let tries=0;
+
+        while(tries<100){
+
+            tries++;
+
+            const wall = {
+
+                x:60+Math.random()*(W-180),
+                y:90+Math.random()*(H-180),
+
+                w:70+Math.random()*100,
+                h:20+Math.random()*45
+
+            };
+
+            if(
+                !circleRectCollision(
+                    player.x,
+                    player.y,
+                    60,
+                    wall
+                )
+            ){
+
+                walls.push(wall);
+
+                break;
+
+            }
 
         }
 
-
-        /*
-         * IMPORTANT:
-         * Increase the level ONLY ONCE.
-         */
-
-        level++;
+    }
 
 
-        /*
-         * Never allow an invalid
-         * level number.
-         */
+    /* EXIT */
 
-        if(level < 1){
-            level = 1;
-        }
+    exit.x = W - 70;
+    exit.y = H/2;
 
+    /* LOOT */
 
-        /*
-         * Generate exactly one
-         * new level.
-         */
+    const lootCount =
+        Math.min(3 + Math.floor(level/2),9);
 
-        createLevel();
+    for(let i=0;i<lootCount;i++){
 
+        const p = safePosition(15);
 
-        /*
-         * Unlock movement AFTER
-         * the new level exists.
-         */
+        loot.push({
 
-        transitioningLevel = false;
+            x:p.x,
+            y:p.y,
 
+            r:10,
 
-        updateHUD();
+            value:50 + level*15,
 
-    },1200);
-
-}
-
-
-/* =========================================================
-   PARTICLES
-========================================================= */
-
-function spawnParticles(
-    x,
-    y,
-    color,
-    amount
-){
-
-    for(let i=0;i<amount;i++){
-
-        particles.push({
-
-            x:x,
-            y:y,
-
-            vx:random(-100,100),
-            vy:random(-100,100),
-
-            life:random(.3,.9),
-
-            maxLife:.9,
-
-            color:color,
-
-            size:random(2,5)
+            collected:false
 
         });
 
     }
 
-}
 
+    /* TERMINALS */
 
-function updateParticles(dt){
+    const terminalCount =
+        Math.min(1 + Math.floor(level/4),3);
 
-    for(
-        let i=particles.length-1;
-        i>=0;
-        i--
-    ){
+    for(let i=0;i<terminalCount;i++){
 
-        const p = particles[i];
+        const p = safePosition(18);
 
-        p.x += p.vx*dt;
-        p.y += p.vy*dt;
+        terminals.push({
 
-        p.life -= dt;
+            x:p.x,
+            y:p.y,
 
-        if(p.life <= 0){
+            r:16,
 
-            particles.splice(i,1);
+            hacked:false
 
-        }
+        });
 
     }
 
-}
 
+    /* GUARDS */
 
-/* =========================================================
-   TIMER
-========================================================= */
+    const guardCount =
+        Math.min(1 + Math.floor(level/2),8);
 
-function updateTimer(dt){
+    for(let i=0;i<guardCount;i++){
 
-    gameTime -= dt;
+        const p = safePosition(20);
 
-    if(gameTime <= 0){
+        guards.push({
 
-        gameTime = 0;
+            x:p.x,
+            y:p.y,
 
-        lives--;
+            r:14,
 
-        if(lives <= 0){
+            speed:
+                45 + level*5,
 
-            endGame();
+            angle:
+                Math.random()*Math.PI*2,
 
-        }else{
+            viewDistance:
+                150 + level*5,
 
-            showMessage(
-                "TIME UP!"
-            );
+            viewAngle:
+                Math.PI/3,
 
-            gameTime =
-                Math.max(
-                    45,
-                    105-level*2
-                );
+            turnTimer:
+                1+Math.random()*2
 
-        }
+        });
 
     }
 
+    updateHUD();
+
 }
 
 
-/* =========================================================
+/* =========================
    HUD
-========================================================= */
+========================= */
 
 function updateHUD(){
 
-    cashText.textContent =
-        cash;
-
-    scoreText.textContent =
-        score;
-
-    timeText.textContent =
-        Math.ceil(gameTime);
-
-    levelText.textContent =
+    document.getElementById("level").textContent =
         level;
 
-    livesText.textContent =
+    document.getElementById("cash").textContent =
+        cash;
+
+    document.getElementById("lives").textContent =
         lives;
 
-    alertText.textContent =
-        Math.min(
-            100,
-            Math.floor(alertLevel)
-        );
+    document.getElementById("score").textContent =
+        score;
 
 }
 
 
-/* =========================================================
+/* =========================
    MESSAGE
-========================================================= */
+========================= */
+
+let messageTimer = 0;
 
 function showMessage(text){
+
+    const message =
+        document.getElementById("message");
 
     message.textContent = text;
 
@@ -2091,73 +988,178 @@ function showMessage(text){
 }
 
 
-/* =========================================================
-   PAUSE
-========================================================= */
+/* =========================
+   DASH
+========================= */
 
-function togglePause(){
+function dash(){
 
-    if(!running){
+    if(!running || paused || transitioningLevel)
         return;
+
+    if(player.dashCooldown > 0)
+        return;
+
+    const movement = getMovement();
+
+    let x = movement.x;
+    let y = movement.y;
+
+    if(x===0 && y===0)
+        return;
+
+    player.x += x * 120;
+    player.y += y * 120;
+
+    player.x =
+        Math.max(
+            player.r,
+            Math.min(W-player.r,player.x)
+        );
+
+    player.y =
+        Math.max(
+            75,
+            Math.min(H-player.r,player.y)
+        );
+
+    player.dashCooldown = 2;
+
+    player.invincible = .3;
+
+    spawnParticles(
+        player.x,
+        player.y,
+        "#19f7ff",
+        20
+    );
+
+}
+
+
+/* =========================
+   HACK
+========================= */
+
+function hack(){
+
+    if(!running || paused)
+        return;
+
+    for(const terminal of terminals){
+
+        if(terminal.hacked)
+            continue;
+
+        const d =
+            Math.hypot(
+                player.x-terminal.x,
+                player.y-terminal.y
+            );
+
+        if(d < 65){
+
+            terminal.hacked = true;
+
+            score += 100;
+
+            showMessage("TERMINAL HACKED +100");
+
+            spawnParticles(
+                terminal.x,
+                terminal.y,
+                "#ff2bd6",
+                25
+            );
+
+            updateHUD();
+
+            return;
+
+        }
+
     }
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document.getElementById("dashButton")
+.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
+
+    dash();
+
+});
+
+
+document.getElementById("hackButton")
+.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
+
+    hack();
+
+});
+
+
+document.getElementById("pauseButton")
+.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
+
+    if(!running) return;
 
     paused = !paused;
 
-    pauseButton.textContent =
-        paused ? "RESUME" : "PAUSE";
+    document.getElementById("pauseButton")
+        .textContent =
+        paused ? "▶" : "Ⅱ";
 
-}
-
-
-/* =========================================================
-   GAME OVER
-========================================================= */
-
-function endGame(){
-
-    running = false;
-
-    paused = false;
-
-    transitioningLevel = false;
-
-    finalScore.textContent =
-        score;
-
-    gameOverScreen.classList.remove(
-        "hidden"
-    );
-
-}
+});
 
 
-/* =========================================================
+document.getElementById("startButton")
+.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
+
+    startGame();
+
+});
+
+
+document.getElementById("restartButton")
+.addEventListener("pointerdown",e=>{
+
+    e.preventDefault();
+
+    startGame();
+
+});
+
+
+/* =========================
    START GAME
-========================================================= */
+========================= */
 
 function startGame(){
 
-    startScreen.classList.add(
-        "hidden"
-    );
+    document.getElementById("startScreen")
+        .classList.add("hidden");
 
-    gameOverScreen.classList.add(
-        "hidden"
-    );
+    document.getElementById("gameOverScreen")
+        .classList.add("hidden");
 
     running = true;
 
     paused = false;
 
-    /*
-     * RESET THE LEVEL TRANSITION LOCK
-     */
-
     transitioningLevel = false;
-
-    /*
-     * ALWAYS START AT LEVEL 1
-     */
 
     level = 1;
 
@@ -2177,15 +1179,9 @@ function startGame(){
 
     player.invincible = 1;
 
-    player.invisibility = 0;
-
     player.vx = 0;
 
     player.vy = 0;
-
-    /*
-     * CREATE LEVEL 1
-     */
 
     createLevel();
 
@@ -2194,71 +1190,440 @@ function startGame(){
 }
 
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+/* =========================
+   PLAYER MOVEMENT
+========================= */
 
-startButton.addEventListener(
-    "click",
-    startGame
-);
+function movePlayer(dt){
 
-restartButton.addEventListener(
-    "click",
-    startGame
-);
+    if(transitioningLevel)
+        return;
 
-pauseButton.addEventListener(
-    "click",
-    togglePause
-);
+    const movement =
+        getMovement();
+
+    player.vx =
+        movement.x * player.speed;
+
+    player.vy =
+        movement.y * player.speed;
+
+    const newX =
+        player.x + player.vx * dt;
+
+    const newY =
+        player.y + player.vy * dt;
+
+    if(!isBlocked(newX,player.y,player.r)){
+
+        player.x = newX;
+
+    }
+
+    if(!isBlocked(player.x,newY,player.r)){
+
+        player.y = newY;
+
+    }
+
+    player.x =
+        Math.max(
+            player.r,
+            Math.min(W-player.r,player.x)
+        );
+
+    player.y =
+        Math.max(
+            65,
+            Math.min(H-player.r,player.y)
+        );
+
+}
 
 
-/* =========================================================
-   DRAW BACKGROUND
-========================================================= */
+/* =========================
+   LOOT
+========================= */
 
-function drawBackground(){
+function collectLoot(){
+
+    for(const item of loot){
+
+        if(item.collected)
+            continue;
+
+        const distance =
+            Math.hypot(
+                player.x-item.x,
+                player.y-item.y
+            );
+
+        if(distance < player.r + item.r){
+
+            item.collected = true;
+
+            cash += item.value;
+
+            score += item.value;
+
+            showMessage(
+                "LOOT +" + item.value
+            );
+
+            spawnParticles(
+                item.x,
+                item.y,
+                "#ffe600",
+                18
+            );
+
+            updateHUD();
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   EXIT
+========================= */
+
+function checkExit(){
+
+    const distance =
+        Math.hypot(
+            player.x-exit.x,
+            player.y-exit.y
+        );
+
+    const allLoot =
+        loot.every(item=>item.collected);
+
+    if(
+        distance < player.r + exit.r &&
+        allLoot &&
+        !transitioningLevel
+    ){
+
+        levelComplete();
+
+    }
+
+}
+
+
+/* =========================
+   LEVEL COMPLETE
+========================= */
+
+function levelComplete(){
+
+    if(transitioningLevel)
+        return;
+
+    transitioningLevel = true;
+
+    const reward = cash * 2;
+
+    score += reward;
+
+    showMessage(
+        "HEIST COMPLETE! +" + reward
+    );
+
+    player.vx = 0;
+    player.vy = 0;
+
+    setTimeout(()=>{
+
+        if(!running){
+
+            transitioningLevel = false;
+
+            return;
+
+        }
+
+        /* EXACTLY ONE LEVEL UP */
+
+        level++;
+
+        if(level < 1)
+            level = 1;
+
+        createLevel();
+
+        transitioningLevel = false;
+
+        updateHUD();
+
+    },1200);
+
+}
+
+
+/* =========================
+   GUARDS
+========================= */
+
+function updateGuards(dt){
+
+    alarm = false;
+
+    for(const guard of guards){
+
+        guard.turnTimer -= dt;
+
+        if(guard.turnTimer <= 0){
+
+            guard.turnTimer =
+                1+Math.random()*2;
+
+            guard.angle +=
+                (Math.random()-.5)*1.8;
+
+        }
+
+        const dx =
+            player.x-guard.x;
+
+        const dy =
+            player.y-guard.y;
+
+        const distance =
+            Math.hypot(dx,dy);
+
+        const playerAngle =
+            Math.atan2(dy,dx);
+
+        let angleDifference =
+            playerAngle-guard.angle;
+
+        while(angleDifference>Math.PI)
+            angleDifference-=Math.PI*2;
+
+        while(angleDifference<-Math.PI)
+            angleDifference+=Math.PI*2;
+
+        const seesPlayer =
+            distance < guard.viewDistance &&
+            Math.abs(angleDifference) <
+                guard.viewAngle/2 &&
+            player.invisibility <= 0;
+
+        if(seesPlayer){
+
+            alarm = true;
+
+            alertLevel += dt * 1.2;
+
+            guard.angle =
+                playerAngle;
+
+            const speed =
+                guard.speed *
+                (1 + alertLevel*.15);
+
+            if(distance>30){
+
+                const nx = dx/distance;
+                const ny = dy/distance;
+
+                const newX =
+                    guard.x + nx*speed*dt;
+
+                const newY =
+                    guard.y + ny*speed*dt;
+
+                if(!isBlocked(newX,guard.y,guard.r))
+                    guard.x = newX;
+
+                if(!isBlocked(guard.x,newY,guard.r))
+                    guard.y = newY;
+
+            }
+
+        }
+
+        if(
+            distance <
+            player.r + guard.r + 3 &&
+            player.invincible <= 0
+        ){
+
+            loseLife();
+
+        }
+
+    }
+
+    if(!alarm){
+
+        alertLevel -= dt*.5;
+
+        alertLevel =
+            Math.max(0,alertLevel);
+
+    }
+
+}
+
+
+/* =========================
+   LOSE LIFE
+========================= */
+
+function loseLife(){
+
+    if(player.invincible > 0)
+        return;
+
+    lives--;
+
+    updateHUD();
+
+    spawnParticles(
+        player.x,
+        player.y,
+        "#ff1744",
+        30
+    );
+
+    if(lives <= 0){
+
+        gameOver();
+
+        return;
+
+    }
+
+    showMessage("CAUGHT! -1 LIFE");
+
+    player.x = 70;
+    player.y = H/2;
+
+    player.invincible = 2;
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function gameOver(){
+
+    running = false;
+
+    paused = false;
+
+    document.getElementById("finalScore")
+        .textContent = score;
+
+    document.getElementById("finalLevel")
+        .textContent = level;
+
+    document.getElementById("gameOverScreen")
+        .classList.remove("hidden");
+
+}
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+function spawnParticles(x,y,color,count){
+
+    for(let i=0;i<count;i++){
+
+        const angle =
+            Math.random()*Math.PI*2;
+
+        const speed =
+            40+Math.random()*120;
+
+        particles.push({
+
+            x,
+            y,
+
+            vx:
+                Math.cos(angle)*speed,
+
+            vy:
+                Math.sin(angle)*speed,
+
+            life:
+                .5+Math.random()*.7,
+
+            color
+
+        });
+
+    }
+
+}
+
+
+function updateParticles(dt){
+
+    for(const p of particles){
+
+        p.x += p.vx*dt;
+        p.y += p.vy*dt;
+
+        p.vx *= .96;
+        p.vy *= .96;
+
+        p.life -= dt;
+
+    }
+
+    particles =
+        particles.filter(p=>p.life>0);
+
+}
+
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(){
+
+    ctx.clearRect(0,0,W,H);
+
+    /* BACKGROUND */
 
     ctx.fillStyle = "#050510";
 
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
+    ctx.fillRect(0,0,W,H);
 
 
-    /* Grid */
+    /* GRID */
 
     ctx.strokeStyle =
-        "rgba(25,247,255,.07)";
+        "rgba(25,247,255,.08)";
 
     ctx.lineWidth = 1;
 
     const grid = 40;
 
-    for(
-        let x=0;
-        x<W;
-        x+=grid
-    ){
+    for(let x=0;x<W;x+=grid){
 
         ctx.beginPath();
 
-        ctx.moveTo(x,70);
+        ctx.moveTo(x,0);
         ctx.lineTo(x,H);
 
         ctx.stroke();
 
     }
 
-    for(
-        let y=70;
-        y<H;
-        y+=grid
-    ){
+    for(let y=0;y<H;y+=grid){
 
         ctx.beginPath();
 
@@ -2269,29 +1634,13 @@ function drawBackground(){
 
     }
 
-}
 
-
-/* =========================================================
-   DRAW WALLS
-========================================================= */
-
-function drawWalls(){
+    /* WALLS */
 
     for(const wall of walls){
 
         ctx.fillStyle =
-            "#11112c";
-
-        ctx.strokeStyle =
-            "#19f7ff";
-
-        ctx.lineWidth = 2;
-
-        ctx.shadowBlur = 8;
-
-        ctx.shadowColor =
-            "#19f7ff";
+            "rgba(20,25,45,.95)";
 
         ctx.fillRect(
             wall.x,
@@ -2299,6 +1648,11 @@ function drawWalls(){
             wall.w,
             wall.h
         );
+
+        ctx.strokeStyle =
+            "#19f7ff";
+
+        ctx.lineWidth = 2;
 
         ctx.strokeRect(
             wall.x,
@@ -2307,131 +1661,10 @@ function drawWalls(){
             wall.h
         );
 
-        ctx.shadowBlur = 0;
-
     }
 
-}
 
-
-/* =========================================================
-   DRAW LOOT
-========================================================= */
-
-function drawLoot(){
-
-    for(const item of loot){
-
-        if(item.collected){
-            continue;
-        }
-
-        ctx.save();
-
-        ctx.translate(
-            item.x,
-            item.y
-        );
-
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor =
-            "#ffe600";
-
-        ctx.fillStyle =
-            "#ffe600";
-
-        ctx.rotate(
-            Math.PI/4
-        );
-
-        ctx.fillRect(
-            -8,
-            -8,
-            16,
-            16
-        );
-
-        ctx.restore();
-
-    }
-
-}
-
-
-/* =========================================================
-   DRAW TERMINALS
-========================================================= */
-
-function drawTerminals(){
-
-    for(const terminal of terminals){
-
-        ctx.save();
-
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor =
-            terminal.hacked
-            ? "#36ff7a"
-            : "#ff29dc";
-
-        ctx.fillStyle =
-            terminal.hacked
-            ? "#36ff7a"
-            : "#ff29dc";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            terminal.x,
-            terminal.y,
-            terminal.r,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-        ctx.fillStyle =
-            "#050510";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            terminal.x,
-            terminal.y,
-            8,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-        ctx.restore();
-
-    }
-
-}
-
-
-/* =========================================================
-   DRAW EXIT
-========================================================= */
-
-function drawExit(){
-
-    ctx.save();
-
-    ctx.shadowBlur = 25;
-
-    ctx.shadowColor =
-        "#36ff7a";
-
-    ctx.strokeStyle =
-        "#36ff7a";
-
-    ctx.lineWidth = 4;
+    /* EXIT */
 
     ctx.beginPath();
 
@@ -2443,107 +1676,110 @@ function drawExit(){
         Math.PI*2
     );
 
+    ctx.fillStyle =
+        "rgba(25,247,255,.15)";
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "#19f7ff";
+
+    ctx.lineWidth = 3;
+
     ctx.stroke();
 
-    ctx.beginPath();
+    ctx.fillStyle = "#19f7ff";
 
-    ctx.arc(
+    ctx.font = "bold 12px Arial";
+
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "EXIT",
         exit.x,
-        exit.y,
-        exit.r*0.45,
-        0,
-        Math.PI*2
+        exit.y+4
     );
 
-    ctx.stroke();
 
-    ctx.restore();
+    /* LOOT */
 
-}
+    for(const item of loot){
 
-
-/* =========================================================
-   DRAW POWERUPS
-========================================================= */
-
-function drawPowerups(){
-
-    for(const power of powerups){
-
-        if(power.collected){
+        if(item.collected)
             continue;
-        }
-
-        ctx.save();
-
-        ctx.shadowBlur = 18;
-
-        ctx.shadowColor =
-            "#a855ff";
-
-        ctx.fillStyle =
-            "#a855ff";
 
         ctx.beginPath();
 
         ctx.arc(
-            power.x,
-            power.y,
-            power.r,
+            item.x,
+            item.y,
+            item.r,
             0,
             Math.PI*2
         );
 
+        ctx.fillStyle = "#ffe600";
+
+        ctx.shadowBlur = 15;
+
+        ctx.shadowColor = "#ffe600";
+
         ctx.fill();
 
-        ctx.fillStyle =
-            "white";
-
-        ctx.font =
-            "bold 12px Arial";
-
-        ctx.textAlign =
-            "center";
-
-        ctx.textBaseline =
-            "middle";
-
-        ctx.fillText(
-            power.type === "speed"
-            ? "S"
-            : "I",
-            power.x,
-            power.y
-        );
-
-        ctx.restore();
+        ctx.shadowBlur = 0;
 
     }
 
-}
+
+    /* TERMINALS */
+
+    for(const terminal of terminals){
+
+        ctx.beginPath();
+
+        ctx.arc(
+            terminal.x,
+            terminal.y,
+            terminal.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            terminal.hacked
+            ? "#222"
+            : "#ff2bd6";
+
+        ctx.shadowBlur =
+            terminal.hacked ? 0 : 15;
+
+        ctx.shadowColor =
+            "#ff2bd6";
+
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "10px Arial";
+
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            terminal.hacked ? "OK" : "HACK",
+            terminal.x,
+            terminal.y+3
+        );
+
+    }
 
 
-/* =========================================================
-   DRAW GUARDS
-========================================================= */
-
-function drawGuards(){
+    /* GUARDS */
 
     for(const guard of guards){
 
-        /* Vision cone */
-
-        ctx.save();
-
-        ctx.globalAlpha =
-            guard.state === "chase"
-            ? .20
-            : .09;
-
-        ctx.fillStyle =
-            guard.state === "chase"
-            ? "#ff286e"
-            : "#ff29dc";
+        /* VISION CONE */
 
         ctx.beginPath();
 
@@ -2555,35 +1791,22 @@ function drawGuards(){
         ctx.arc(
             guard.x,
             guard.y,
-            guard.visionRange,
-            guard.angle-
-                guard.visionAngle/2,
-            guard.angle+
-                guard.visionAngle/2
+            guard.viewDistance,
+            guard.angle-guard.viewAngle/2,
+            guard.angle+guard.viewAngle/2
         );
 
         ctx.closePath();
 
+        ctx.fillStyle =
+            alarm
+            ? "rgba(255,20,70,.18)"
+            : "rgba(255,50,100,.08)";
+
         ctx.fill();
 
-        ctx.restore();
 
-
-        /* Guard body */
-
-        ctx.save();
-
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor =
-            guard.state === "chase"
-            ? "#ff286e"
-            : "#ff29dc";
-
-        ctx.fillStyle =
-            guard.state === "chase"
-            ? "#ff286e"
-            : "#ff29dc";
+        /* GUARD */
 
         ctx.beginPath();
 
@@ -2595,60 +1818,20 @@ function drawGuards(){
             Math.PI*2
         );
 
-        ctx.fill();
+        ctx.fillStyle = "#ff1744";
 
-        ctx.fillStyle =
-            "#050510";
+        ctx.shadowBlur = 15;
 
-        ctx.beginPath();
-
-        ctx.arc(
-            guard.x,
-            guard.y,
-            5,
-            0,
-            Math.PI*2
-        );
+        ctx.shadowColor = "#ff1744";
 
         ctx.fill();
 
-        ctx.restore();
+        ctx.shadowBlur = 0;
 
     }
 
-}
 
-
-/* =========================================================
-   DRAW PLAYER
-========================================================= */
-
-function drawPlayer(){
-
-    ctx.save();
-
-    if(player.invisibility > 0){
-
-        ctx.globalAlpha = .35;
-
-    }else if(
-        player.invincible > 0 &&
-        Math.floor(
-            player.invincible*10
-        )%2===0
-    ){
-
-        ctx.globalAlpha = .35;
-
-    }
-
-    ctx.shadowBlur = 25;
-
-    ctx.shadowColor =
-        "#19f7ff";
-
-    ctx.fillStyle =
-        "#19f7ff";
+    /* PLAYER */
 
     ctx.beginPath();
 
@@ -2660,229 +1843,74 @@ function drawPlayer(){
         Math.PI*2
     );
 
-    ctx.fill();
-
     ctx.fillStyle =
-        "#050510";
+        player.invincible > 0
+        ? "#ffffff"
+        : "#19f7ff";
 
-    ctx.beginPath();
+    ctx.shadowBlur = 20;
 
-    ctx.arc(
-        player.x,
-        player.y,
-        6,
-        0,
-        Math.PI*2
-    );
+    ctx.shadowColor = "#19f7ff";
 
     ctx.fill();
 
-    ctx.restore();
-
-}
+    ctx.shadowBlur = 0;
 
 
-/* =========================================================
-   DRAW PARTICLES
-========================================================= */
-
-function drawParticles(){
+    /* PARTICLES */
 
     for(const p of particles){
 
         ctx.globalAlpha =
-            Math.max(
-                0,
-                p.life/p.maxLife
-            );
+            Math.max(0,p.life);
 
-        ctx.fillStyle =
-            p.color;
+        ctx.fillStyle = p.color;
 
         ctx.fillRect(
             p.x,
             p.y,
-            p.size,
-            p.size
+            3,
+            3
         );
 
     }
 
     ctx.globalAlpha = 1;
 
-}
 
+    /* ALARM */
 
-/* =========================================================
-   DRAW ALARM
-========================================================= */
+    if(alarm){
 
-function drawAlarm(){
+        ctx.fillStyle =
+            "rgba(255,0,50,.08)";
 
-    if(!alarm){
-        return;
-    }
+        ctx.fillRect(
+            0,0,W,H
+        );
 
-    ctx.save();
+        ctx.fillStyle = "#ff1744";
 
-    ctx.globalAlpha =
-        .08 +
-        Math.sin(
-            performance.now()/100
-        )*.04;
+        ctx.font = "bold 20px Arial";
 
-    ctx.fillStyle =
-        "#ff003c";
+        ctx.textAlign = "center";
 
-    ctx.fillRect(
-        0,
-        70,
-        W,
-        H-70
-    );
-
-    ctx.restore();
-
-}
-
-
-/* =========================================================
-   GAME UPDATE
-========================================================= */
-
-function update(dt){
-
-    if(
-        !running ||
-        paused
-    ){
-        return;
-    }
-
-
-    /* Transition lock */
-
-    if(transitioningLevel){
-
-        updateParticles(dt);
-
-        return;
-
-    }
-
-
-    gameTime -= dt;
-
-    if(gameTime <= 0){
-
-        gameTime = 0;
-
-        lives--;
-
-        if(lives <= 0){
-
-            endGame();
-
-            return;
-
-        }
-
-        gameTime =
-            Math.max(
-                45,
-                105-level*2
-            );
-
-        showMessage(
-            "TIME UP! -1 LIFE"
+        ctx.fillText(
+            "🚨 ALARM 🚨",
+            W/2,
+            100
         );
 
     }
 
-
-    movePlayer(dt);
-
-    updateGuards(dt);
-
-    updateLoot();
-
-    updatePowerups();
-
-    updateParticles(dt);
-
-    checkExit();
-
-
-    if(player.dashCooldown > 0){
-
-        player.dashCooldown -= dt;
-
-    }
-
-    if(player.invincible > 0){
-
-        player.invincible -= dt;
-
-    }
-
-    if(player.invisibility > 0){
-
-        player.invisibility -= dt;
-
-    }
-
-    if(messageTimer > 0){
-
-        messageTimer -= dt;
-
-        if(messageTimer <= 0){
-
-            message.textContent = "";
-
-        }
-
-    }
-
-    updateHUD();
-
 }
 
 
-/* =========================================================
-   DRAW
-========================================================= */
-
-function draw(){
-
-    drawBackground();
-
-    drawWalls();
-
-    drawExit();
-
-    drawLoot();
-
-    drawTerminals();
-
-    drawPowerups();
-
-    drawGuards();
-
-    drawPlayer();
-
-    drawParticles();
-
-    drawAlarm();
-
-}
-
-
-/* =========================================================
+/* =========================
    GAME LOOP
-========================================================= */
+========================= */
 
-let lastTime =
-    performance.now();
+let lastTime = performance.now();
 
 function gameLoop(now){
 
@@ -2894,26 +1922,95 @@ function gameLoop(now){
 
     lastTime = now;
 
-    update(dt);
+    if(running && !paused){
+
+        movePlayer(dt);
+
+        collectLoot();
+
+        checkExit();
+
+        updateGuards(dt);
+
+        updateParticles(dt);
+
+        player.dashCooldown =
+            Math.max(
+                0,
+                player.dashCooldown-dt
+            );
+
+        player.invincible =
+            Math.max(
+                0,
+                player.invincible-dt
+            );
+
+        player.invisibility =
+            Math.max(
+                0,
+                player.invisibility-dt
+            );
+
+    }
+
+    if(messageTimer>0){
+
+        messageTimer -= dt;
+
+        if(messageTimer<=0){
+
+            document.getElementById("message")
+                .textContent = "";
+
+        }
+
+    }
 
     draw();
 
-    requestAnimationFrame(
-        gameLoop
-    );
+    requestAnimationFrame(gameLoop);
 
 }
 
-requestAnimationFrame(
-    gameLoop
+requestAnimationFrame(gameLoop);
+
+
+/* =========================
+   IPAD SAFETY
+========================= */
+
+document.addEventListener(
+    "touchmove",
+    function(e){
+        e.preventDefault();
+    },
+    {passive:false}
 );
 
+document.addEventListener(
+    "gesturestart",
+    function(e){
+        e.preventDefault();
+    },
+    {passive:false}
+);
 
-/* =========================================================
-   INITIAL HUD
-========================================================= */
+document.addEventListener(
+    "gesturechange",
+    function(e){
+        e.preventDefault();
+    },
+    {passive:false}
+);
 
-updateHUD();
+document.addEventListener(
+    "gestureend",
+    function(e){
+        e.preventDefault();
+    },
+    {passive:false}
+);
 
 </script>
 
