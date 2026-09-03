@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>NEON HEIST</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#050510;
+  font-family:Arial,Helvetica,sans-serif;
+  touch-action:none;
+}
+
+canvas{
+  display:block;
+  width:100%;
+  height:100%;
+  touch-action:none;
+}
+
+#hud{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  pointer-events:none;
+  z-index:5;
+}
+
+.panel{
+  background:rgba(5,5,20,.78);
+  border:1px solid #19f7ff;
+  box-shadow:0 0 15px rgba(25,247,255,.25);
+  border-radius:12px;
+  padding:9px 13px;
+  color:white;
+  backdrop-filter:blur(5px);
+}
+
+#stats{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.stat{
+  min-width:75px;
+  text-align:center;
+}
+
+.label{
+  color:#7b8499;
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.value{
+  color:#fff;
+  font-size:17px;
+  font-weight:bold;
+  margin-top:2px;
+}
+
+#alertBox{
+  width:180px;
+  text-align:center;
+}
+
+#alertText{
+  font-size:11px;
+  color:#7b8499;
+}
+
+#alertMeter{
+  height:7px;
+  border-radius:10px;
+  background:#17172a;
+  overflow:hidden;
+  margin-top:6px;
+}
+
+#alertFill{
+  width:0%;
+  height:100%;
+  background:#ff3355;
+  box-shadow:0 0 10px #ff3355;
+}
+
+.screen{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  background:
+    radial-gradient(circle at center,rgba(20,10,70,.75),rgba(2,2,12,.97));
+}
+
+.card{
+  width:min(90%,550px);
+  padding:35px;
+  text-align:center;
+  background:rgba(8,8,28,.94);
+  border:1px solid #19f7ff;
+  border-radius:22px;
+  box-shadow:
+    0 0 25px rgba(25,247,255,.25),
+    inset 0 0 35px rgba(170,0,255,.06);
+}
+
+.logo{
+  font-size:clamp(42px,10vw,76px);
+  font-weight:900;
+  letter-spacing:6px;
+  color:#19f7ff;
+  text-shadow:
+    0 0 8px #19f7ff,
+    0 0 30px #19f7ff;
+}
+
+.subtitle{
+  color:#ff38d1;
+  letter-spacing:4px;
+  font-size:12px;
+  margin:8px 0 25px;
+}
+
+.card p{
+  color:#b9bfd2;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:14px 25px;
+  background:#19f7ff;
+  color:#02020b;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(25,247,255,.45);
+  transition:.15s;
+}
+
+button:active{
+  transform:scale(.94);
+}
+
+.secondary{
+  margin-top:12px;
+  background:#17172b;
+  color:#19f7ff;
+  border:1px solid #19f7ff;
+  box-shadow:none;
+}
+
+.hidden{
+  display:none!important;
+}
+
+#mobileControls{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
+}
+
+#joystick{
+  position:absolute;
+  left:25px;
+  bottom:28px;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:rgba(25,247,255,.08);
+  border:2px solid rgba(25,247,255,.4);
+  pointer-events:auto;
+}
+
+#stick{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:58px;
+  height:58px;
+  margin-left:-29px;
+  margin-top:-29px;
+  border-radius:50%;
+  background:rgba(25,247,255,.35);
+  border:2px solid #19f7ff;
+  box-shadow:0 0 18px rgba(25,247,255,.5);
+}
+
+.actionArea{
+  position:absolute;
+  right:25px;
+  bottom:28px;
+  display:flex;
+  gap:13px;
+  align-items:end;
+  pointer-events:auto;
+}
+
+.action{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  padding:0;
+  background:rgba(255,56,209,.15);
+  border:2px solid #ff38d1;
+  color:#ff72df;
+  box-shadow:0 0 18px rgba(255,56,209,.3);
+  font-size:11px;
+}
+
+#dashBtn{
+  width:86px;
+  height:86px;
+  border-color:#19f7ff;
+  color:#19f7ff;
+  background:rgba(25,247,255,.12);
+}
+
+#message{
+  position:fixed;
+  left:50%;
+  bottom:20%;
+  transform:translateX(-50%);
+  z-index:8;
+  color:white;
+  font-weight:bold;
+  font-size:18px;
+  text-align:center;
+  text-shadow:0 0 12px #19f7ff;
+  opacity:0;
+  transition:.2s;
+  pointer-events:none;
+}
+
+@media (pointer:fine){
+  #mobileControls{
+    display:none;
+  }
+}
+
+@media(max-width:700px){
+  #hud{
+    padding:8px;
+  }
+
+  .panel{
+    padding:7px 9px;
+  }
+
+  .stat{
+    min-width:58px;
+  }
+
+  .value{
+    font-size:14px;
+  }
+
+  #alertBox{
+    width:125px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+  <div id="stats">
+    <div class="panel stat">
+      <div class="label">CASH</div>
+      <div class="value" id="cash">$0</div>
+    </div>
+
+    <div class="panel stat">
+      <div class="label">SCORE</div>
+      <div class="value" id="score">0</div>
+    </div>
+
+    <div class="panel stat">
+      <div class="label">TIME</div>
+      <div class="value" id="time">90</div>
+    </div>
+
+    <div class="panel stat">
+      <div class="label">LEVEL</div>
+      <div class="value" id="level">1</div>
+    </div>
+
+    <div class="panel stat">
+      <div class="label">LIVES</div>
+      <div class="value" id="lives">♥♥♥</div>
+    </div>
+  </div>
+
+  <div class="panel" id="alertBox">
+    <div id="alertText">STEALTH MODE</div>
+    <div id="alertMeter">
+      <div id="alertFill"></div>
+    </div>
+  </div>
+</div>
+
+<div id="message"></div>
+
+<div id="mobileControls">
+  <div id="joystick">
+    <div id="stick"></div>
+  </div>
+
+  <div class="actionArea">
+    <button class="action" id="hackBtn">HACK</button>
+    <button class="action" id="dashBtn">DASH</button>
+  </div>
+</div>
+
+<div class="screen" id="startScreen">
+  <div class="card">
+    <div class="logo">NEON</div>
+    <div class="logo" style="color:#ff38d1;text-shadow:0 0 8px #ff38d1,0 0 30px #ff38d1">
+      HEIST
+    </div>
+
+    <div class="subtitle">STEAL. HACK. ESCAPE.</div>
+
+    <p>
+      Break into the neon vault, steal as much cash as possible,
+      hack the security system and escape before the guards catch you.
+    </p>
+
+    <p style="font-size:13px">
+      💻 <b>PC:</b> WASD / Arrow Keys · SHIFT = Dash · E = Hack
+      <br><br>
+      📱 <b>Mobile:</b> Joystick · DASH · HACK
+    </p>
+
+    <button id="startBtn">START HEIST</button>
+  </div>
+</div>
+
+<div class="screen hidden" id="gameOverScreen">
+  <div class="card">
+    <div class="logo" style="font-size:45px">HEIST FAILED</div>
+    <div class="subtitle">THE CITY CAUGHT YOU</div>
+
+    <p id="finalStats"></p>
+
+    <button id="restartBtn">TRY AGAIN</button>
+    <button class="secondary" id="menuBtn">MAIN MENU</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   NEON HEIST
+   Single-file browser game
+========================================================= */
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W = innerWidth;
+let H = innerHeight;
+let DPR = Math.min(devicePixelRatio || 1,2);
+
+function resize(){
+  W = innerWidth;
+  H = innerHeight;
+  DPR = Math.min(devicePixelRatio || 1,2);
+
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
+
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+
+addEventListener("resize",resize);
+resize();
+
+/* ---------- DOM ---------- */
+
+const startScreen = document.getElementById("startScreen");
+const gameOverScreen = document.getElementById("gameOverScreen");
+
+const cashEl = document.getElementById("cash");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const levelEl = document.getElementById("level");
+const livesEl = document.getElementById("lives");
+
+const alertText = document.getElementById("alertText");
+const alertFill = document.getElementById("alertFill");
+const messageEl = document.getElementById("message");
+
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+const menuBtn = document.getElementById("menuBtn");
+
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
+const hackBtn = document.getElementById("hackBtn");
+const dashBtn = document.getElementById("dashBtn");
+
+/* ---------- GAME STATE ---------- */
+
+let running = false;
+let paused = false;
+
+let level = 1;
+let score = 0;
+let cash = 0;
+let lives = 3;
+let timeLeft = 90;
+
+let alertLevel = 0;
+let alarm = false;
+
+let levelTimer = 0;
+let lastTime = 0;
+
+let highScore = Number(localStorage.getItem("neonHeistHighScore") || 0);
+
+let walls = [];
+let loot = [];
+let terminals = [];
+let guards = [];
+let particles = [];
+let powerups = [];
+let exit = null;
+
+let shake = 0;
+
+const keys = {};
+
+addEventListener("keydown",e=>{
+  keys[e.key.toLowerCase()] = true;
+
+  if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(e.key.toLowerCase())){
+    e.preventDefault();
+  }
+
+  if(e.key.toLowerCase()==="e" || e.key===" "){
+    hack();
+  }
+
+  if(e.key.toLowerCase()==="shift"){
+    dash();
+  }
+
+  if(e.key.toLowerCase()==="p"){
+    paused = !paused;
+  }
+});
+
+addEventListener("keyup",e=>{
+  keys[e.key.toLowerCase()] = false;
+});
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+const player = {
+  x:0,
+  y:0,
+  r:14,
+  speed:190,
+  dx:0,
+  dy:0,
+  dashCooldown:0,
+  invincible:0,
+  invisibility:0
+};
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function rand(min,max){
+  return Math.random()*(max-min)+min;
+}
+
+function randint(min,max){
+  return Math.floor(rand(min,max+1));
+}
+
+function dist(a,b){
+  return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function clamp(v,min,max){
+  return Math.max(min,Math.min(max,v));
+}
+
+function rectCircleCollide(c,r){
+  const x = clamp(c.x,r.x,r.x+r.w);
+  const y = clamp(c.y,r.y,r.y+r.h);
+
+  return Math.hypot(c.x-x,c.y-y)<c.r;
+}
+
+function circleRectDistance(c,r){
+  const x = clamp(c.x,r.x,r.x+r.w);
+  const y = clamp(c.y,r.y,r.y+r.h);
+  return Math.hypot(c.x-x,c.y-y);
+}
+
+function showMessage(text){
+  messageEl.textContent = text;
+  messageEl.style.opacity = "1";
+
+  clearTimeout(showMessage.timer);
+
+  showMessage.timer = setTimeout(()=>{
+    messageEl.style.opacity = "0";
+  },1300);
+}
+
+function spawnParticles(x,y,color,count=15){
+  for(let i=0;i<count;i++){
+    const a=rand(0,Math.PI*2);
+    const s=rand(30,180);
+
+    particles.push({
+      x,y,
+      vx:Math.cos(a)*s,
+      vy:Math.sin(a)*s,
+      life:rand(.3,.8),
+      maxLife:.8,
+      size:rand(2,5),
+      color
+    });
+  }
+}
+
+/* =========================================================
+   LEVEL GENERATION
+========================================================= */
+
+function createLevel(){
+
+  walls=[];
+  loot=[];
+  terminals=[];
+  guards=[];
+  particles=[];
+  powerups=[];
+
+  alarm=false;
+  alertLevel=0;
+
+  timeLeft = Math.max(45,95-level*5);
+
+  /*
+    Outer walls
+  */
+
+  walls.push(
+    {x:-20,y:-20,w:W+40,h:20},
+    {x:-20,y:H,w:W+40,h:20},
+    {x:-20,y:-20,w:20,h:H+40},
+    {x:W,y:-20,w:20,h:H+40}
+  );
+
+  /*
+    Random city blocks
+  */
+
+  const blocks = 7 + level*2;
+
+  for(let i=0;i<blocks;i++){
+
+    let w=rand(70,170);
+    let h=rand(45,120);
+
+    let x=rand(35,W-w-35);
+    let y=rand(100,H-h-50);
+
+    /*
+      Keep center spawn area clear.
+    */
+
+    if(
+      x<250 &&
+      x+w>80 &&
+      y<300 &&
+      y+h>100
+    ){
+      i--;
+      continue;
+    }
+
+    walls.push({
+      x,y,w,h
+    });
+  }
+
+  /*
+    Player spawn
+  */
+
+  player.x=80;
+  player.y=H-100;
+
+  /*
+    Vault / exit
+  */
+
+  exit={
+    x:W-90,
+    y:100,
+    r:28,
+    unlocked:false
+  };
+
+  /*
+    Loot
+  */
+
+  const lootCount = 8 + level*2;
+
+  for(let i=0;i<lootCount;i++){
+
+    const p=findSafePoint();
+
+    loot.push({
+      x:p.x,
+      y:p.y,
+      r:9,
+      value:randint(50,180),
+      collected:false,
+      pulse:rand(0,Math.PI*2)
+    });
+  }
+
+  /*
+    Security terminals
+  */
+
+  const terminalCount = Math.min(2+Math.floor(level/2),5);
+
+  for(let i=0;i<terminalCount;i++){
+
+    const p=findSafePoint();
+
+    terminals.push({
+      x:p.x,
+      y:p.y,
+      r:15,
+      hacked:false,
+      progress:0
+    });
+  }
+
+  /*
+    Guards
+  */
+
+  const guardCount = Math.min(2+level,8);
+
+  for(let i=0;i<guardCount;i++){
+
+    const p=findSafePoint();
+
+    guards.push({
+      x:p.x,
+      y:p.y,
+      r:13,
+      speed:rand(45,65)+level*5,
+      angle:rand(0,Math.PI*2),
+      rotate:Math.random()<.5?-1:1,
+      vision:Math.PI*.48,
+      range:rand(150,210)+level*8,
+      state:"patrol",
+      targetX:p.x,
+      targetY:p.y,
+      alert:0
+    });
+  }
+
+  /*
+    Powerups
+  */
+
+  if(level>=2){
+
+    const types=["speed","cloak","cash"];
+
+    for(let i=0;i<2;i++){
+
+      const p=findSafePoint();
+
+      powerups.push({
+        x:p.x,
+        y:p.y,
+        r:11,
+        type:types[randint(0,types.length-1)],
+        taken:false,
+        pulse:rand(0,6)
+      });
+    }
+  }
+
+  showMessage("LEVEL "+level);
+}
+
+function findSafePoint(){
+
+  for(let attempt=0;attempt<300;attempt++){
+
+    const p={
+      x:rand(50,W-50),
+      y:rand(90,H-50)
+    };
+
+    let bad=false;
+
+    /*
+      Avoid player start
+    */
+
+    if(Math.hypot(p.x-80,p.y-(H-100))<130){
+      bad=true;
+    }
+
+    /*
+      Avoid exit
+    */
+
+    if(exit && Math.hypot(p.x-exit.x,p.y-exit.y)<80){
+      bad=true;
+    }
+
+    /*
+      Avoid walls
+    */
+
+    for(const wall of walls){
+
+      if(
+        p.x>wall.x-25 &&
+        p.x<wall.x+wall.w+25 &&
+        p.y>wall.y-25 &&
+        p.y<wall.y+wall.h+25
+      ){
+        bad=true;
+        break;
+      }
+    }
+
+    if(!bad) return p;
+  }
+
+  return {
+    x:W/2,
+    y:H/2
+  };
+}
+
+/* =========================================================
+   COLLISION / MOVEMENT
+========================================================= */
+
+function movePlayer(dx,dy){
+
+  const oldX=player.x;
+  const oldY=player.y;
+
+  player.x += dx;
+  player.x = clamp(player.x,20,W-20);
+
+  for(const wall of walls){
+    if(rectCircleCollide(player,wall)){
+      player.x=oldX;
+      break;
+    }
+  }
+
+  player.y += dy;
+  player.y = clamp(player.y,80,H-20);
+
+  for(const wall of walls){
+    if(rectCircleCollide(player,wall)){
+      player.y=oldY;
+      break;
+    }
+  }
+}
+
+/* =========================================================
+   HACKING
+========================================================= */
+
+function hack(){
+
+  if(!running || paused) return;
+
+  let closest=null;
+  let best=55;
+
+  for(const t of terminals){
+
+    if(t.hacked) continue;
+
+    const d=dist(player,t);
+
+    if(d<best){
+      best=d;
+      closest=t;
+    }
+  }
+
+  if(!closest){
+    showMessage("NO TERMINAL NEARBY");
+    return;
+  }
+
+  closest.progress += .35;
+
+  if(closest.progress>=1){
+
+    closest.progress=1;
+    closest.hacked=true;
+
+    score+=500;
+    timeLeft+=8;
+
+    spawnParticles(
+      closest.x,
+      closest.y,
+      "#19f7ff",
+      35
+    );
+
+    showMessage("SYSTEM HACKED +500");
+
+    /*
+      Hacking reduces alert.
+    */
+
+    alertLevel=Math.max(0,alertLevel-35);
+
+    if(terminals.every(t=>t.hacked)){
+      showMessage("ALL SECURITY HACKED!");
+    }
+  }else{
+    showMessage("HACKING...");
+  }
+}
+
+/* =========================================================
+   DASH
+========================================================= */
+
+function dash(){
+
+  if(!running || paused) return;
+  if(player.dashCooldown>0) return;
+
+  let dx=player.dx;
+  let dy=player.dy;
+
+  if(Math.hypot(dx,dy)<.1){
+    dx=1;
+    dy=0;
+  }
+
+  const len=Math.hypot(dx,dy);
+
+  dx/=len;
+  dy/=len;
+
+  for(let i=0;i<12;i++){
+
+    movePlayer(dx*18,dy*18);
+
+    particles.push({
+      x:player.x,
+      y:player.y,
+      vx:0,
+      vy:0,
+      life:.3,
+      maxLife:.3,
+      size:rand(3,8),
+      color:"#19f7ff"
+    });
+  }
+
+  player.dashCooldown=2;
+  player.invincible=.45;
+
+  shake=8;
+}
+
+/* =========================================================
+   GUARD AI
+========================================================= */
+
+function lineClear(x1,y1,x2,y2){
+
+  const steps=Math.ceil(Math.hypot(x2-x1,y2-y1)/8);
+
+  for(let i=1;i<steps;i++){
+
+    const t=i/steps;
+
+    const x=x1+(x2-x1)*t;
+    const y=y1+(y2-y1)*t;
+
+    for(const wall of walls){
+
+      if(
+        x>=wall.x &&
+        x<=wall.x+wall.w &&
+        y>=wall.y &&
+        y<=wall.y+wall.h
+      ){
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function guardCanSee(g){
+
+  if(player.invisibility>0) return false;
+
+  const dx=player.x-g.x;
+  const dy=player.y-g.y;
+
+  const d=Math.hypot(dx,dy);
+
+  if(d>g.range) return false;
+
+  const angle=Math.atan2(dy,dx);
+
+  let diff=Math.atan2(
+    Math.sin(angle-g.angle),
+    Math.cos(angle-g.angle)
+  );
+
+  if(Math.abs(diff)>g.vision/2) return false;
+
+  return lineClear(g.x,g.y,player.x,player.y);
+}
+
+function updateGuards(dt){
+
+  for(const g of guards){
+
+    const sees=guardCanSee(g);
+
+    if(sees){
+
+      g.alert += dt*65;
+      alertLevel += dt*38;
+
+      if(g.alert>25){
+        g.state="chase";
+      }
+
+      if(g.alert>100){
+        alarm=true;
+      }
+
+    }else{
+
+      g.alert=Math.max(0,g.alert-dt*18);
+
+      if(g.state==="chase" && g.alert<30){
+        g.state="search";
+      }
+    }
+
+    if(alarm || g.state==="chase"){
+
+      const dx=player.x-g.x;
+      const dy=player.y-g.y;
+      const d=Math.hypot(dx,dy);
+
+      if(d>1){
+
+        const nx=dx/d;
+        const ny=dy/d;
+
+        const oldX=g.x;
+        const oldY=g.y;
+
+        g.x+=nx*g.speed*1.55*dt;
+        g.y+=ny*g.speed*1.55*dt;
+
+        for(const wall of walls){
+
+          if(rectCircleCollide(g,wall)){
+            g.x=oldX;
+            g.y=oldY;
+
+            g.angle+=rand(-1,1);
+            break;
+          }
+        }
+
+        g.angle=Math.atan2(ny,nx);
+      }
+
+    }else{
+
+      /*
+        Patrol rotation
+      */
+
+      g.angle+=g.rotate*dt*.45;
+
+      g.x+=Math.cos(g.angle)*g.speed*.25*dt;
+      g.y+=Math.sin(g.angle)*g.speed*.25*dt;
+
+      for(const wall of walls){
+
+        if(rectCircleCollide(g,wall)){
+
+          g.x-=Math.cos(g.angle)*g.speed*.25*dt;
+          g.y-=Math.sin(g.angle)*g.speed*.25*dt;
+
+          g.angle+=Math.PI*.7;
+        }
+      }
+    }
+
+    /*
+      Catch player
+    */
+
+    if(
+      player.invincible<=0 &&
+      dist(g,player)<g.r+player.r+3
+    ){
+      playerHit();
+    }
+  }
+
+  alertLevel=clamp(alertLevel,0,100);
+
+  if(alertLevel>=100){
+    alarm=true;
+  }
+}
+
+/* =========================================================
+   PLAYER HIT
+========================================================= */
+
+function playerHit(){
+
+  if(player.invincible>0) return;
+
+  lives--;
+
+  player.invincible=2;
+
+  alertLevel=70;
+  alarm=true;
+
+  shake=15;
+
+  spawnParticles(
+    player.x,
+    player.y,
+    "#ff3355",
+    35
+  );
+
+  if(lives<=0){
+    endGame("CAUGHT");
+    return;
+  }
+
+  player.x=80;
+  player.y=H-100;
+
+  showMessage("⚠ CAUGHT! -1 LIFE");
+}
+
+/* =========================================================
+   COLLECTION
+========================================================= */
+
+function updateObjects(dt){
+
+  /*
+    Loot
+  */
+
+  for(const item of loot){
+
+    if(item.collected) continue;
+
+    item.pulse+=dt*4;
+
+    if(dist(player,item)<player.r+item.r+6){
+
+      item.collected=true;
+
+      cash+=item.value;
+
+      const combo=Math.floor(1+cash/500);
+
+      score+=item.value*combo;
+
+      spawnParticles(
+        item.x,
+        item.y,
+        "#ffe44d",
+        18
+      );
+
+      showMessage(
+        "+$"+item.value+"  x"+combo
+      );
+    }
+  }
+
+  /*
+    Powerups
+  */
+
+  for(const p of powerups){
+
+    if(p.taken) continue;
+
+    p.pulse+=dt*5;
+
+    if(dist(player,p)<player.r+p.r+5){
+
+      p.taken=true;
+
+      spawnParticles(
+        p.x,
+        p.y,
+        "#ff38d1",
+        25
+      );
+
+      if(p.type==="speed"){
+
+        player.speed=330;
+
+        setTimeout(()=>{
+          player.speed=190;
+        },6000);
+
+        showMessage("⚡ SPEED BOOST");
+      }
+
+      if(p.type==="cloak"){
+
+        player.invisibility=6;
+
+        showMessage("👻 CLOAK ACTIVE");
+      }
+
+      if(p.type==="cash"){
+
+        cash+=500;
+        score+=1000;
+
+        showMessage("💰 CASH BOOST +$500");
+      }
+    }
+  }
+
+  /*
+    Exit
+  */
+
+  const allHacked=terminals.every(t=>t.hacked);
+  const allLoot=loot.every(l=>l.collected);
+
+  if(
+    exit &&
+    dist(player,exit)<player.r+exit.r
+  ){
+
+    if(allHacked){
+
+      if(!alarm){
+
+        levelComplete();
+
+      }else{
+
+        showMessage("DISABLE THE ALARM FIRST");
+      }
+
+    }else{
+
+      showMessage(
+        "HACK "+terminals.filter(t=>!t.hacked).length+
+        " TERMINAL(S)"
+      );
+    }
+  }
+}
+
+/* =========================================================
+   LEVEL COMPLETE
+========================================================= */
+
+function levelComplete(){
+
+  score+=cash*2;
+
+  if(score>highScore){
+    highScore=score;
+    localStorage.setItem(
+      "neonHeistHighScore",
+      highScore
+    );
+  }
+
+  spawnParticles(
+    exit.x,
+    exit.y,
+    "#19f7ff",
+    60
+  );
+
+  showMessage(
+    "HEIST COMPLETE!  +"+cash*2
+  );
+
+  setTimeout(()=>{
+
+    if(!running) return;
+
+    level++;
+
+    /*
+      Keep some cash and score.
+    */
+
+    createLevel();
+
+  },1200);
+}
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(dt){
+
+  if(!running || paused) return;
+
+  timeLeft-=dt;
+
+  if(timeLeft<=0){
+
+    timeLeft=0;
+    endGame("TIME'S UP");
+
+    return;
+  }
+
+  levelTimer+=dt;
+
+  player.dashCooldown=Math.max(
+    0,
+    player.dashCooldown-dt
+  );
+
+  player.invincible=Math.max(
+    0,
+    player.invincible-dt
+  );
+
+  player.invisibility=Math.max(
+    0,
+    player.invisibility-dt
+  );
+
+  /*
+    Input
+  */
+
+  let ix=0;
+  let iy=0;
+
+  if(keys["w"] || keys["arrowup"]) iy-=1;
+  if(keys["s"] || keys["arrowdown"]) iy+=1;
+  if(keys["a"] || keys["arrowleft"]) ix-=1;
+  if(keys["d"] || keys["arrowright"]) ix+=1;
+
+  /*
+    Add joystick input
+  */
+
+  ix+=joystickInput.x;
+  iy+=joystickInput.y;
+
+  const len=Math.hypot(ix,iy);
+
+  if(len>1){
+    ix/=len;
+    iy/=len;
+  }
+
+  player.dx=ix;
+  player.dy=iy;
+
+  if(len>.05){
+
+    const speed=
+      player.speed*
+      (player.invisibility>0?.9:1);
+
+    movePlayer(
+      ix*speed*dt,
+      iy*speed*dt
+    );
+  }
+
+  updateGuards(dt);
+  updateObjects(dt);
+  updateParticles(dt);
+
+  /*
+    Alarm slowly fades if nobody sees player.
+  */
+
+  if(!guards.some(g=>guardCanSee(g))){
+
+    alertLevel-=dt*8;
+
+    if(alertLevel<25){
+      alarm=false;
+
+      for(const g of guards){
+
+        if(g.state==="chase"){
+          g.state="patrol";
+          g.alert=0;
+        }
+      }
+    }
+  }
+
+  updateHUD();
+
+  shake=Math.max(
+    0,
+    shake-dt*20
+  );
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function updateParticles(dt){
+
+  for(let i=particles.length-1;i>=0;i--){
+
+    const p=particles[i];
+
+    p.x+=p.vx*dt;
+    p.y+=p.vy*dt;
+
+    p.vx*=Math.pow(.03,dt);
+    p.vy*=Math.pow(.03,dt);
+
+    p.life-=dt;
+
+    if(p.life<=0){
+      particles.splice(i,1);
+    }
+  }
+}
+
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD(){
+
+  cashEl.textContent="$"+cash;
+  scoreEl.textContent=score;
+  timeEl.textContent=Math.ceil(timeLeft);
+  levelEl.textContent=level;
+
+  livesEl.textContent=
+    "♥".repeat(Math.max(0,lives))+
+    "♡".repeat(Math.max(0,3-lives));
+
+  alertFill.style.width=alertLevel+"%";
+
+  if(alarm){
+
+    alertText.textContent="🚨 ALARM ACTIVE";
+    alertText.style.color="#ff3355";
+
+  }else if(alertLevel>55){
+
+    alertText.textContent="⚠ DETECTED";
+    alertText.style.color="#ffe44d";
+
+  }else{
+
+    alertText.textContent=
+      player.invisibility>0
+      ? "👻 CLOAKED"
+      : "STEALTH MODE";
+
+    alertText.style.color="#7b8499";
+  }
+}
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function draw(){
+
+  ctx.clearRect(0,0,W,H);
+
+  ctx.save();
+
+  if(shake>0){
+
+    ctx.translate(
+      rand(-shake,shake),
+      rand(-shake,shake)
+    );
+  }
+
+  drawBackground();
+  drawGrid();
+  drawWalls();
+  drawExit();
+  drawLoot();
+  drawTerminals();
+  drawPowerups();
+  drawGuards();
+  drawPlayer();
+  drawParticles();
+
+  ctx.restore();
+
+  if(alarm){
+
+    ctx.fillStyle=
+      "rgba(255,30,60,"+
+      (0.035+Math.sin(performance.now()/100)*.02)+
+      ")";
+
+    ctx.fillRect(0,0,W,H);
+  }
+
+  if(paused){
+    drawPause();
+  }
+}
+
+/* ---------- BACKGROUND ---------- */
+
+function drawBackground(){
+
+  const gradient=ctx.createRadialGradient(
+    W/2,H/2,20,
+    W/2,H/2,Math.max(W,H)
+  );
+
+  gradient.addColorStop(0,"#11132b");
+  gradient.addColorStop(1,"#03030b");
+
+  ctx.fillStyle=gradient;
+  ctx.fillRect(0,0,W,H);
+}
+
+function drawGrid(){
+
+  ctx.strokeStyle="rgba(25,247,255,.055)";
+  ctx.lineWidth=1;
+
+  const size=40;
+
+  for(let x=0;x<W;x+=size){
+
+    ctx.beginPath();
+    ctx.moveTo(x,70);
+    ctx.lineTo(x,H);
+    ctx.stroke();
+  }
+
+  for(let y=70;y<H;y+=size){
+
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(W,y);
+    ctx.stroke();
+  }
+}
+
+/* ---------- WALLS ---------- */
+
+function drawWalls(){
+
+  for(const r of walls){
+
+    if(
+      r.x<0 ||
+      r.y<0 ||
+      r.x>W ||
+      r.y>H
+    ) continue;
+
+    ctx.shadowBlur=12;
+    ctx.shadowColor="#8b25ff";
+
+    ctx.fillStyle="#10102a";
+    ctx.fillRect(r.x,r.y,r.w,r.h);
+
+    ctx.shadowBlur=0;
+
+    ctx.strokeStyle="#7130c7";
+    ctx.lineWidth=2;
+    ctx.strokeRect(r.x,r.y,r.w,r.h);
+
+    ctx.strokeStyle="rgba(25,247,255,.12)";
+    ctx.lineWidth=1;
+
+    for(let x=r.x+10;x<r.x+r.w;x+=20){
+
+      ctx.beginPath();
+      ctx.moveTo(x,r.y);
+      ctx.lineTo(x,r.y+r.h);
+      ctx.stroke();
+    }
+  }
+}
+
+/* ---------- EXIT ---------- */
+
+function drawExit(){
+
+  if(!exit) return;
+
+  const pulse=
+    1+Math.sin(performance.now()/250)*.08;
+
+  ctx.save();
+
+  ctx.translate(exit.x,exit.y);
+  ctx.scale(pulse,pulse);
+
+  ctx.beginPath();
+  ctx.arc(0,0,exit.r,0,Math.PI*2);
+
+  ctx.fillStyle=
+    alarm
+    ? "rgba(255,50,70,.1)"
+    : "rgba(25,247,255,.1)";
+
+  ctx.fill();
+
+  ctx.strokeStyle=
+    alarm
+    ? "#ff3355"
+    : "#19f7ff";
+
+  ctx.lineWidth=3;
+  ctx.shadowBlur=20;
+  ctx.shadowColor=ctx.strokeStyle;
+  ctx.stroke();
+
+  ctx.shadowBlur=0;
+
+  ctx.fillStyle="white";
+  ctx.font="bold 10px Arial";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+
+  ctx.fillText(
+    terminals.every(t=>t.hacked) ? "EXIT":"LOCKED",
+    0,0
+  );
+
+  ctx.restore();
+}
+
+/* ---------- LOOT ---------- */
+
+function drawLoot(){
+
+  for(const item of loot){
+
+    if(item.collected) continue;
+
+    const s=
+      1+Math.sin(item.pulse)*.15;
+
+    ctx.save();
+
+    ctx.translate(item.x,item.y);
+    ctx.rotate(Math.PI/4);
+
+    ctx.scale(s,s);
+
+    ctx.fillStyle="#ffe44d";
+    ctx.shadowBlur=16;
+    ctx.shadowColor="#ffe44d";
+
+    ctx.fillRect(
+      -item.r,
+      -item.r,
+      item.r*2,
+      item.r*2
+    );
+
+    ctx.restore();
+  }
+}
+
+/* ---------- TERMINALS ---------- */
+
+function drawTerminals(){
+
+  for(const t of terminals){
+
+    ctx.save();
+
+    ctx.translate(t.x,t.y);
+
+    ctx.beginPath();
+    ctx.arc(
+      0,0,
+      t.r+5,
+      0,
+      Math.PI*2
+    );
+
+    ctx.strokeStyle=
+      t.hacked
+      ? "#19f7ff"
+      : "#ff38d1";
+
+    ctx.shadowBlur=14;
+    ctx.shadowColor=ctx.strokeStyle;
+
+    ctx.lineWidth=3;
+    ctx.stroke();
+
+    ctx.shadowBlur=0;
+
+    ctx.fillStyle=
+      t.hacked
+      ? "#19f7ff"
+      : "#ff38d1";
+
+    ctx.fillRect(-5,-5,10,10);
+
+    if(!t.hacked && t.progress>0){
+
+      ctx.strokeStyle="#19f7ff";
+      ctx.lineWidth=4;
+
+      ctx.beginPath();
+      ctx.arc(
+        0,0,
+        t.r+9,
+        -Math.PI/2,
+        -Math.PI/2+t.progress*Math.PI*2
+      );
+
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+}
+
+/* ---------- POWERUPS ---------- */
+
+function drawPowerups(){
+
+  for(const p of powerups){
+
+    if(p.taken) continue;
+
+    const pulse=
+      1+Math.sin(p.pulse)*.12;
+
+    ctx.save();
+
+    ctx.translate(p.x,p.y);
+    ctx.scale(pulse,pulse);
+
+    let color="#ff38d1";
+    let text="?";
+
+    if(p.type==="speed"){
+      color="#19f7ff";
+      text="⚡";
+    }
+
+    if(p.type==="cloak"){
+      color="#b55cff";
+      text="◉";
+    }
+
+    if(p.type==="cash"){
+      color="#ffe44d";
+      text="$";
+    }
+
+    ctx.beginPath();
+    ctx.arc(
+      0,0,
+      p.r,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle="rgba(10,10,30,.9)";
+    ctx.fill();
+
+    ctx.strokeStyle=color;
+    ctx.lineWidth=2;
+    ctx.shadowBlur=15;
+    ctx.shadowColor=color;
+    ctx.stroke();
+
+    ctx.shadowBlur=0;
+
+    ctx.fillStyle=color;
+    ctx.font="bold 14px Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(text,0,0);
+
+    ctx.restore();
+  }
+}
+
+/* ---------- GUARDS ---------- */
+
+function drawGuards(){
+
+  for(const g of guards){
+
+    /*
+      Vision cone
+    */
+
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.moveTo(g.x,g.y);
+
+    ctx.arc(
+      g.x,
+      g.y,
+      g.range,
+      g.angle-g.vision/2,
+      g.angle+g.vision/2
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle=
+      g.state==="chase" || alarm
+      ? "rgba(255,40,60,.16)"
+      : "rgba(255,40,60,.07)";
+
+    ctx.fill();
+
+    ctx.restore();
+
+    /*
+      Guard
+    */
+
+    ctx.save();
+
+    ctx.translate(g.x,g.y);
+
+    ctx.beginPath();
+    ctx.arc(
+      0,0,
+      g.r,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle=
+      g.state==="chase"
+      ? "#ff3355"
+      : "#ff5270";
+
+    ctx.shadowBlur=18;
+    ctx.shadowColor="#ff3355";
+    ctx.fill();
+
+    ctx.shadowBlur=0;
+
+    /*
+      Direction
+    */
+
+    ctx.rotate(g.angle);
+
+    ctx.fillStyle="#fff";
+    ctx.fillRect(3,-3,10,6);
+
+    ctx.restore();
+  }
+}
+
+/* ---------- PLAYER ---------- */
+
+function drawPlayer(){
+
+  ctx.save();
+
+  ctx.translate(player.x,player.y);
+
+  if(player.invincible>0){
+
+    ctx.globalAlpha=
+      .45+Math.sin(performance.now()/60)*.4;
+  }
+
+  const color=
+    player.invisibility>0
+    ? "#b55cff"
+    : "#19f7ff";
+
+  ctx.beginPath();
+  ctx.arc(
+    0,0,
+    player.r,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fillStyle=color;
+  ctx.shadowBlur=22;
+  ctx.shadowColor=color;
+  ctx.fill();
+
+  ctx.shadowBlur=0;
+
+  /*
+    Mask / direction
+  */
+
+  ctx.rotate(
+    Math.atan2(
+      player.dy,
+      player.dx
+    ) || 0
+  );
+
+  ctx.fillStyle="#050510";
+
+  ctx.fillRect(
+    2,
+    -4,
+    10,
+    8
+  );
+
+  ctx.restore();
+
+  /*
+    Cloak ring
+  */
+
+  if(player.invisibility>0){
+
+    ctx.beginPath();
+
+    ctx.arc(
+      player.x,
+      player.y,
+      player.r+8+
+      Math.sin(performance.now()/100)*3,
+      0,
+      Math.PI*2
+    );
+
+    ctx.strokeStyle="rgba(181,92,255,.7)";
+    ctx.lineWidth=2;
+    ctx.stroke();
+  }
+}
+
+/* ---------- PARTICLES ---------- */
+
+function drawParticles(){
+
+  for(const p of particles){
+
+    ctx.globalAlpha=
+      clamp(p.life/p.maxLife,0,1);
+
+    ctx.fillStyle=p.color;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      p.x,
+      p.y,
+      p.size,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
+  }
+
+  ctx.globalAlpha=1;
+}
+
+/* ---------- PAUSE ---------- */
+
+function drawPause(){
+
+  ctx.fillStyle="rgba(0,0,0,.6)";
+  ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle="#19f7ff";
+  ctx.font="bold 45px Arial";
+  ctx.textAlign="center";
+  ctx.fillText(
+    "PAUSED",
+    W/2,
+    H/2
+  );
+
+  ctx.font="14px Arial";
+  ctx.fillStyle="#aaa";
+  ctx.fillText(
+    "Press P to continue",
+    W/2,
+    H/2+35
+  );
+}
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function loop(timestamp){
+
+  const dt=Math.min(
+    .033,
+    (timestamp-lastTime)/1000 || 0
+  );
+
+  lastTime=timestamp;
+
+  update(dt);
+  draw();
+
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+
+/* =========================================================
+   GAME CONTROL
+========================================================= */
+
+function startGame(){
+
+  startScreen.classList.add("hidden");
+  gameOverScreen.classList.add("hidden");
+
+  running=true;
+  paused=false;
+
+  level=1;
+  score=0;
+  cash=0;
+  lives=3;
+
+  player.speed=190;
+  player.dashCooldown=0;
+  player.invincible=0;
+  player.invisibility=0;
+
+  createLevel();
+  updateHUD();
+}
+
+function endGame(reason){
+
+  running=false;
+
+  if(score>highScore){
+
+    highScore=score;
+
+    localStorage.setItem(
+      "neonHeistHighScore",
+      highScore
+    );
+  }
+
+  document.getElementById("finalStats").innerHTML=
+    `
+      <b>Reason:</b> ${reason}<br><br>
+      💰 Cash stolen: <b>$${cash}</b><br>
+      ⭐ Score: <b>${score}</b><br>
+      🏙️ Level reached: <b>${level}</b><br>
+      🏆 High score: <b>${highScore}</b>
+    `;
+
+  gameOverScreen.classList.remove("hidden");
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+startBtn.addEventListener("click",startGame);
+restartBtn.addEventListener("click",startGame);
+
+menuBtn.addEventListener("click",()=>{
+
+  gameOverScreen.classList.add("hidden");
+  startScreen.classList.remove("hidden");
+});
+
+/* =========================================================
+   MOBILE JOYSTICK
+========================================================= */
+
+let joystickInput={
+  x:0,
+  y:0
+};
+
+let joystickActive=false;
+let joystickPointer=null;
+
+function updateJoystick(clientX,clientY){
+
+  const rect=joystick.getBoundingClientRect();
+
+  const centerX=rect.left+rect.width/2;
+  const centerY=rect.top+rect.height/2;
+
+  let dx=clientX-centerX;
+  let dy=clientY-centerY;
+
+  const max=43;
+
+  const d=Math.hypot(dx,dy);
+
+  if(d>max){
+
+    dx=dx/d*max;
+    dy=dy/d*max;
+  }
+
+  joystickInput.x=dx/max;
+  joystickInput.y=dy/max;
+
+  stick.style.transform=
+    `translate(${dx}px,${dy}px)`;
+}
+
+function resetJoystick(){
+
+  joystickInput.x=0;
+  joystickInput.y=0;
+
+  stick.style.transform=
+    "translate(0,0)";
+
+  joystickActive=false;
+  joystickPointer=null;
+}
+
+joystick.addEventListener("pointerdown",e=>{
+
+  e.preventDefault();
+
+  joystickActive=true;
+  joystickPointer=e.pointerId;
+
+  joystick.setPointerCapture(e.pointerId);
+
+  updateJoystick(
+    e.clientX,
+    e.clientY
+  );
+});
+
+joystick.addEventListener("pointermove",e=>{
+
+  if(!joystickActive) return;
+  if(e.pointerId!==joystickPointer) return;
+
+  e.preventDefault();
+
+  updateJoystick(
+    e.clientX,
+    e.clientY
+  );
+});
+
+joystick.addEventListener("pointerup",resetJoystick);
+joystick.addEventListener("pointercancel",resetJoystick);
+joystick.addEventListener("lostpointercapture",resetJoystick);
+
+/* =========================================================
+   MOBILE BUTTONS
+========================================================= */
+
+hackBtn.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  hack();
+});
+
+dashBtn.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  dash();
+});
+
+/*
+  Prevent accidental browser gestures.
+*/
+
+document.addEventListener("touchmove",e=>{
+  e.preventDefault();
+},{passive:false});
+
+/* =========================================================
+   INITIAL DRAW
+========================================================= */
+
+createLevel();
+updateHUD();
+
+</script>
+
+</body>
+</html>
