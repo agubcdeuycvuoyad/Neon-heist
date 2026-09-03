@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               user-scalable=no,
-               viewport-fit=cover">
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no,
+viewport-fit=cover">
 
 <title>NEON HEIST</title>
 
 <style>
 *{
     box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
     user-select:none;
     -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
@@ -26,13 +26,8 @@ html,body{
     height:100%;
     overflow:hidden;
     background:#050510;
-    font-family:Arial,Helvetica,sans-serif;
     touch-action:none;
-}
-
-body{
-    position:fixed;
-    inset:0;
+    font-family:Arial,sans-serif;
 }
 
 canvas{
@@ -40,7 +35,6 @@ canvas{
     inset:0;
     width:100%;
     height:100%;
-    display:block;
     touch-action:none;
 }
 
@@ -53,21 +47,20 @@ canvas{
 
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    gap:5px;
 
     color:white;
     font-weight:bold;
-    font-size:15px;
+    font-size:14px;
 
     pointer-events:none;
 }
 
 .hudBox{
-    background:rgba(0,0,0,.65);
+    background:rgba(0,0,0,.7);
     border:1px solid #19f7ff;
-    border-radius:12px;
-    padding:8px 12px;
-    text-shadow:0 0 8px #19f7ff;
+    border-radius:10px;
+    padding:8px 10px;
 }
 
 #message{
@@ -75,18 +68,14 @@ canvas{
     top:70px;
     left:50%;
     transform:translateX(-50%);
-
     z-index:30;
 
     color:white;
-    font-size:22px;
+    font-size:20px;
     font-weight:bold;
-
     text-align:center;
 
-    text-shadow:
-        0 0 8px #19f7ff,
-        0 0 20px #19f7ff;
+    text-shadow:0 0 15px #19f7ff;
 
     pointer-events:none;
 }
@@ -100,10 +89,7 @@ canvas{
     justify-content:center;
     align-items:center;
 
-    background:
-        radial-gradient(circle at center,
-        rgba(25,247,255,.15),
-        rgba(0,0,0,.95) 65%);
+    background:rgba(0,0,10,.92);
 
     color:white;
     text-align:center;
@@ -114,59 +100,35 @@ canvas{
     padding:30px;
 
     border:2px solid #19f7ff;
-    border-radius:22px;
+    border-radius:20px;
 
-    background:rgba(5,5,20,.92);
+    background:#080816;
 
-    box-shadow:
-        0 0 25px rgba(25,247,255,.5),
-        inset 0 0 30px rgba(25,247,255,.08);
+    box-shadow:0 0 30px rgba(25,247,255,.4);
 }
 
 h1{
-    margin:0 0 10px;
-
-    font-size:48px;
-
+    margin:0 0 15px;
     color:#19f7ff;
+    font-size:45px;
 
     text-shadow:
-        0 0 10px #19f7ff,
-        0 0 30px #19f7ff;
-}
-
-.subtitle{
-    color:#aaa;
-    margin-bottom:25px;
-}
-
-button{
-    border:none;
-    outline:none;
-
-    font-weight:bold;
-    color:white;
-
-    cursor:pointer;
-
-    touch-action:none;
+    0 0 10px #19f7ff,
+    0 0 30px #19f7ff;
 }
 
 .startButton{
-    padding:16px 35px;
-
+    padding:16px 30px;
+    border:0;
     border-radius:15px;
 
     background:#19f7ff;
     color:#001014;
 
     font-size:20px;
+    font-weight:bold;
 
-    box-shadow:0 0 20px rgba(25,247,255,.6);
-}
-
-.startButton:active{
-    transform:scale(.95);
+    touch-action:none;
 }
 
 .hidden{
@@ -174,21 +136,16 @@ button{
 }
 
 /* =========================
-   IPAD / MOBILE CONTROLS
+   MOBILE / IPAD CONTROLS
 ========================= */
 
 #mobileControls{
     position:fixed;
     inset:0;
-
     z-index:20;
 
     pointer-events:none;
-
-    display:block;
 }
-
-/* JOYSTICK */
 
 #joystick{
     position:absolute;
@@ -201,16 +158,14 @@ button{
 
     border-radius:50%;
 
-    background:rgba(20,30,45,.65);
-
-    border:3px solid rgba(25,247,255,.8);
+    background:rgba(20,30,45,.7);
+    border:3px solid #19f7ff;
 
     box-shadow:
-        0 0 20px rgba(25,247,255,.35),
-        inset 0 0 20px rgba(25,247,255,.15);
+    0 0 20px rgba(25,247,255,.4),
+    inset 0 0 20px rgba(25,247,255,.2);
 
     pointer-events:auto;
-
     touch-action:none;
 }
 
@@ -231,56 +186,45 @@ button{
     background:#19f7ff;
 
     box-shadow:
-        0 0 15px #19f7ff,
-        0 0 30px #19f7ff;
+    0 0 15px #19f7ff,
+    0 0 30px #19f7ff;
 
     pointer-events:none;
 }
 
-/* BUTTONS */
-
 .mobileButton{
     position:absolute;
 
-    width:90px;
-    height:90px;
+    width:85px;
+    height:85px;
 
     border-radius:50%;
 
-    background:rgba(20,20,35,.8);
+    background:rgba(20,20,35,.85);
+
+    color:white;
+    font-weight:bold;
 
     border:3px solid #ff2bd6;
 
-    color:#fff;
-
-    font-size:14px;
-
-    box-shadow:
-        0 0 15px rgba(255,43,214,.5);
-
     pointer-events:auto;
-
     touch-action:none;
 }
 
 .mobileButton:active{
     transform:scale(.9);
-    background:#ff2bd6;
 }
 
 #hackButton{
     right:130px;
-    bottom:35px;
+    bottom:30px;
 }
 
 #dashButton{
     right:25px;
-    bottom:115px;
+    bottom:110px;
 
     border-color:#19f7ff;
-
-    box-shadow:
-        0 0 15px rgba(25,247,255,.5);
 }
 
 #pauseButton{
@@ -294,81 +238,50 @@ button{
     width:45px;
     height:45px;
 
-    border-radius:12px;
+    border-radius:10px;
 
     background:rgba(0,0,0,.7);
+    color:white;
 
     border:1px solid #19f7ff;
-
-    color:white;
 
     pointer-events:auto;
 }
 
-/* LANDSCAPE IPAD */
+/* LANDSCAPE */
 
-@media (orientation:landscape) and (max-height:600px){
+@media(max-height:600px) and (orientation:landscape){
 
     #joystick{
-        width:115px;
-        height:115px;
-
+        width:110px;
+        height:110px;
         left:20px;
-        bottom:18px;
+        bottom:15px;
     }
 
     #stick{
-        width:52px;
-        height:52px;
-
-        margin-left:-26px;
-        margin-top:-26px;
+        width:50px;
+        height:50px;
+        margin-left:-25px;
+        margin-top:-25px;
     }
 
     .mobileButton{
-        width:75px;
-        height:75px;
+        width:72px;
+        height:72px;
     }
 
     #hackButton{
-        right:110px;
-        bottom:20px;
+        right:105px;
+        bottom:15px;
     }
 
     #dashButton{
-        right:20px;
-        bottom:95px;
+        right:18px;
+        bottom:90px;
     }
 }
 
-/* SMALL PHONES */
-
-@media (max-width:420px){
-
-    #joystick{
-        width:120px;
-        height:120px;
-
-        left:15px;
-        bottom:18px;
-    }
-
-    .mobileButton{
-        width:75px;
-        height:75px;
-        font-size:12px;
-    }
-
-    #hackButton{
-        right:95px;
-        bottom:20px;
-    }
-
-    #dashButton{
-        right:15px;
-        bottom:100px;
-    }
-}
 </style>
 </head>
 
@@ -379,7 +292,7 @@ button{
 <div id="hud">
 
     <div class="hudBox">
-        LEVEL: <span id="level">1</span>
+        LEVEL <span id="level">1</span>
     </div>
 
     <div class="hudBox">
@@ -391,7 +304,7 @@ button{
     </div>
 
     <div class="hudBox">
-        SCORE: <span id="score">0</span>
+        SCORE <span id="score">0</span>
     </div>
 
 </div>
@@ -400,7 +313,8 @@ button{
 
 <button id="pauseButton">Ⅱ</button>
 
-<!-- START SCREEN -->
+
+<!-- START -->
 
 <div id="startScreen" class="screen">
 
@@ -408,33 +322,22 @@ button{
 
         <h1>NEON HEIST</h1>
 
-        <div class="subtitle">
-            Steal the loot. Avoid the guards. Escape.
-        </div>
+        <p>💰 Collect ALL the loot</p>
+        <p>👮 Avoid the guards</p>
+        <p>🚪 Reach the EXIT</p>
 
-        <p>
-            🎮 Use the joystick to move
-        </p>
+        <br>
 
-        <p>
-            🔓 Hack terminals
-        </p>
-
-        <p>
-            💰 Collect the money
-        </p>
-
-        <p>
-            🚨 Don't get caught
-        </p>
-
-        <button class="startButton" id="startButton">
-            START HEIST
+        <button
+        class="startButton"
+        id="startButton">
+        START HEIST
         </button>
 
     </div>
 
 </div>
+
 
 <!-- GAME OVER -->
 
@@ -445,24 +348,29 @@ button{
         <h1>CAUGHT!</h1>
 
         <p>
-            Final Score:
+            Score:
             <strong id="finalScore">0</strong>
         </p>
 
         <p>
-            Level Reached:
+            Level:
             <strong id="finalLevel">1</strong>
         </p>
 
-        <button class="startButton" id="restartButton">
-            TRY AGAIN
+        <br>
+
+        <button
+        class="startButton"
+        id="restartButton">
+        TRY AGAIN
         </button>
 
     </div>
 
 </div>
 
-<!-- MOBILE CONTROLS -->
+
+<!-- CONTROLS -->
 
 <div id="mobileControls">
 
@@ -471,89 +379,108 @@ button{
     </div>
 
     <button
-        class="mobileButton"
-        id="hackButton">
-        HACK
+    class="mobileButton"
+    id="hackButton">
+    HACK
     </button>
 
     <button
-        class="mobileButton"
-        id="dashButton">
-        DASH
+    class="mobileButton"
+    id="dashButton">
+    DASH
     </button>
 
 </div>
 
+
 <script>
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+/* =================================
+   CANVAS
+================================= */
 
-let W = window.innerWidth;
-let H = window.innerHeight;
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+let W = innerWidth;
+let H = innerHeight;
 
 function resizeCanvas(){
 
-    const dpr = Math.min(window.devicePixelRatio || 1,2);
+    const dpr =
+    Math.min(devicePixelRatio || 1,2);
 
-    W = window.innerWidth;
-    H = window.innerHeight;
+    W = innerWidth;
+    H = innerHeight;
 
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
+    canvas.width = W*dpr;
+    canvas.height = H*dpr;
 
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
+    canvas.style.width = W+"px";
+    canvas.style.height = H+"px";
 
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.setTransform(
+        dpr,0,0,dpr,0,0
+    );
 }
-
-window.addEventListener("resize",resizeCanvas);
-window.addEventListener("orientationchange",()=>{
-    setTimeout(resizeCanvas,200);
-});
 
 resizeCanvas();
 
+window.addEventListener(
+"resize",
+resizeCanvas
+);
 
-/* =========================
+window.addEventListener(
+"orientationchange",
+()=>{
+    setTimeout(resizeCanvas,300);
+});
+
+
+/* =================================
    GAME VARIABLES
-========================= */
+================================= */
 
-let running = false;
-let paused = false;
+let running=false;
+let paused=false;
 
-let level = 1;
-let score = 0;
-let cash = 0;
-let lives = 3;
+let level=1;
+let score=0;
+let cash=0;
+let lives=3;
 
-let alarm = false;
-let alertLevel = 0;
+let transitioningLevel=false;
 
-let transitioningLevel = false;
+let walls=[];
+let loot=[];
+let guards=[];
+let terminals=[];
+let particles=[];
 
-let walls = [];
-let loot = [];
-let guards = [];
-let terminals = [];
-let particles = [];
+let alarm=false;
+let alertLevel=0;
 
-let exit = {
+let messageTimer=0;
+
+let exit={
     x:0,
     y:0,
-    r:25
+    r:30
 };
 
 
-/* =========================
+/* =================================
    PLAYER
-========================= */
+================================= */
 
-const player = {
+const player={
 
-    x:100,
-    y:100,
+    x:70,
+    y:200,
 
     r:15,
 
@@ -567,157 +494,178 @@ const player = {
     invincible:1,
 
     invisibility:0
-
 };
 
 
-/* =========================
-   INPUT
-========================= */
+/* =================================
+   KEYBOARD
+================================= */
 
-const keys = {};
+const keys={};
 
-window.addEventListener("keydown",e=>{
+window.addEventListener(
+"keydown",
+e=>{
 
-    keys[e.key.toLowerCase()] = true;
-
-    if(
-        ["arrowup","arrowdown","arrowleft","arrowright"," "]
-        .includes(e.key.toLowerCase())
-    ){
-        e.preventDefault();
-    }
+    keys[e.key.toLowerCase()]=true;
 
 });
 
-window.addEventListener("keyup",e=>{
-    keys[e.key.toLowerCase()] = false;
+window.addEventListener(
+"keyup",
+e=>{
+
+    keys[e.key.toLowerCase()]=false;
+
 });
 
 
-/* =========================
+/* =================================
    JOYSTICK
-========================= */
+================================= */
 
-let joystickActive = false;
-let joystickX = 0;
-let joystickY = 0;
+let joystickActive=false;
+let joystickX=0;
+let joystickY=0;
 
-const joystick = document.getElementById("joystick");
-const stick = document.getElementById("stick");
+const joystick=
+document.getElementById("joystick");
+
+const stick=
+document.getElementById("stick");
 
 
-function updateJoystick(clientX,clientY){
+function updateJoystick(x,y){
 
-    const rect = joystick.getBoundingClientRect();
+    const rect=
+    joystick.getBoundingClientRect();
 
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+    const cx=
+    rect.left+rect.width/2;
 
-    let dx = clientX - cx;
-    let dy = clientY - cy;
+    const cy=
+    rect.top+rect.height/2;
 
-    const max = rect.width * 0.31;
+    let dx=x-cx;
+    let dy=y-cy;
 
-    const distance = Math.hypot(dx,dy);
+    const max=42;
 
-    if(distance > max){
+    const distance=
+    Math.hypot(dx,dy);
 
-        dx = dx / distance * max;
-        dy = dy / distance * max;
+    if(distance>max){
+
+        dx=dx/distance*max;
+        dy=dy/distance*max;
 
     }
 
-    joystickX = dx / max;
-    joystickY = dy / max;
+    joystickX=dx/max;
+    joystickY=dy/max;
 
-    stick.style.transform =
-        `translate(${dx}px,${dy}px)`;
+    stick.style.transform=
+    `translate(${dx}px,${dy}px)`;
 }
 
 
 function resetJoystick(){
 
-    joystickActive = false;
+    joystickActive=false;
 
-    joystickX = 0;
-    joystickY = 0;
+    joystickX=0;
+    joystickY=0;
 
-    stick.style.transform =
-        "translate(0,0)";
+    stick.style.transform=
+    "translate(0,0)";
 }
 
 
-joystick.addEventListener("pointerdown",e=>{
+joystick.addEventListener(
+"pointerdown",
+e=>{
 
     e.preventDefault();
 
-    joystickActive = true;
+    joystickActive=true;
 
-    joystick.setPointerCapture(e.pointerId);
+    joystick.setPointerCapture(
+        e.pointerId
+    );
 
-    updateJoystick(e.clientX,e.clientY);
+    updateJoystick(
+        e.clientX,
+        e.clientY
+    );
 
 });
 
 
-joystick.addEventListener("pointermove",e=>{
+joystick.addEventListener(
+"pointermove",
+e=>{
 
-    if(!joystickActive) return;
+    if(!joystickActive)
+        return;
 
-    e.preventDefault();
-
-    updateJoystick(e.clientX,e.clientY);
-
-});
-
-
-joystick.addEventListener("pointerup",e=>{
-
-    e.preventDefault();
-
-    resetJoystick();
+    updateJoystick(
+        e.clientX,
+        e.clientY
+    );
 
 });
 
 
-joystick.addEventListener("pointercancel",resetJoystick);
+joystick.addEventListener(
+"pointerup",
+resetJoystick
+);
+
+joystick.addEventListener(
+"pointercancel",
+resetJoystick
+);
 
 
-/* =========================
+/* =================================
    MOVEMENT
-========================= */
+================================= */
 
 function getMovement(){
 
-    let x = 0;
-    let y = 0;
+    let x=0;
+    let y=0;
 
-    if(keys["w"] || keys["arrowup"])
-        y -= 1;
+    if(keys["w"] ||
+       keys["arrowup"])
+        y--;
 
-    if(keys["s"] || keys["arrowdown"])
-        y += 1;
+    if(keys["s"] ||
+       keys["arrowdown"])
+        y++;
 
-    if(keys["a"] || keys["arrowleft"])
-        x -= 1;
+    if(keys["a"] ||
+       keys["arrowleft"])
+        x--;
 
-    if(keys["d"] || keys["arrowright"])
-        x += 1;
+    if(keys["d"] ||
+       keys["arrowright"])
+        x++;
 
     if(joystickActive){
 
-        x = joystickX;
-        y = joystickY;
+        x=joystickX;
+        y=joystickY;
 
     }
 
-    const length = Math.hypot(x,y);
+    const length=
+    Math.hypot(x,y);
 
-    if(length > 0){
+    if(length>0){
 
-        x /= length;
-        y /= length;
+        x/=length;
+        y/=length;
 
     }
 
@@ -725,22 +673,36 @@ function getMovement(){
 }
 
 
-/* =========================
+/* =================================
    COLLISION
-========================= */
+================================= */
 
-function circleRectCollision(cx,cy,r,rect){
+function circleRectCollision(
+cx,cy,r,rect
+){
 
-    const closestX =
-        Math.max(rect.x,Math.min(cx,rect.x+rect.w));
+    const closestX=
+    Math.max(
+        rect.x,
+        Math.min(
+            cx,
+            rect.x+rect.w
+        )
+    );
 
-    const closestY =
-        Math.max(rect.y,Math.min(cy,rect.y+rect.h));
+    const closestY=
+    Math.max(
+        rect.y,
+        Math.min(
+            cy,
+            rect.y+rect.h
+        )
+    );
 
-    const dx = cx - closestX;
-    const dy = cy - closestY;
+    const dx=cx-closestX;
+    const dy=cy-closestY;
 
-    return dx*dx + dy*dy < r*r;
+    return dx*dx+dy*dy<r*r;
 }
 
 
@@ -748,7 +710,11 @@ function isBlocked(x,y,r){
 
     for(const wall of walls){
 
-        if(circleRectCollision(x,y,r,wall))
+        if(
+            circleRectCollision(
+                x,y,r,wall
+            )
+        )
             return true;
 
     }
@@ -757,24 +723,33 @@ function isBlocked(x,y,r){
 }
 
 
-/* =========================
+/* =================================
    SAFE POSITION
-========================= */
+================================= */
 
-function safePosition(r=20){
+function safePosition(r=15){
 
     for(let i=0;i<300;i++){
 
-        const x =
-            40 + Math.random() * (W-80);
+        const x=
+        45+
+        Math.random()*
+        Math.max(50,W-90);
 
-        const y =
-            90 + Math.random() * (H-130);
+        const y=
+        90+
+        Math.random()*
+        Math.max(50,H-140);
 
         if(isBlocked(x,y,r))
             continue;
 
-        if(Math.hypot(x-player.x,y-player.y)<100)
+        if(
+            Math.hypot(
+                x-player.x,
+                y-player.y
+            )<100
+        )
             continue;
 
         return {x,y};
@@ -788,51 +763,74 @@ function safePosition(r=20){
 }
 
 
-/* =========================
+/* =================================
    CREATE LEVEL
-========================= */
+================================= */
 
 function createLevel(){
 
-    walls = [];
-    loot = [];
-    guards = [];
-    terminals = [];
-    particles = [];
+    walls=[];
+    loot=[];
+    guards=[];
+    terminals=[];
+    particles=[];
 
-    alarm = false;
-    alertLevel = 0;
+    alarm=false;
+    alertLevel=0;
 
-    player.vx = 0;
-    player.vy = 0;
+    player.vx=0;
+    player.vy=0;
 
-    player.invincible = 1;
+    player.invincible=1;
 
-    /* PLAYER SPAWN */
+    /*
+       PLAYER ALWAYS STARTS
+       ON THE LEFT
+    */
 
-    player.x = 70;
-    player.y = H/2;
+    player.x=70;
+    player.y=H/2;
+
 
     /* WALLS */
 
-    const wallCount =
-        Math.min(5 + level,16);
+    const wallCount=
+    Math.min(
+        4+level,
+        15
+    );
 
-    for(let i=0;i<wallCount;i++){
+    for(
+        let i=0;
+        i<wallCount;
+        i++
+    ){
 
-        let tries=0;
+        for(
+            let tries=0;
+            tries<100;
+            tries++
+        ){
 
-        while(tries<100){
+            const wall={
 
-            tries++;
+                x:
+                100+
+                Math.random()*
+                Math.max(30,W-220),
 
-            const wall = {
+                y:
+                90+
+                Math.random()*
+                Math.max(30,H-190),
 
-                x:60+Math.random()*(W-180),
-                y:90+Math.random()*(H-180),
+                w:
+                70+
+                Math.random()*90,
 
-                w:70+Math.random()*100,
-                h:20+Math.random()*45
+                h:
+                20+
+                Math.random()*45
 
             };
 
@@ -840,7 +838,7 @@ function createLevel(){
                 !circleRectCollision(
                     player.x,
                     player.y,
-                    60,
+                    70,
                     wall
                 )
             ){
@@ -848,36 +846,48 @@ function createLevel(){
                 walls.push(wall);
 
                 break;
-
             }
-
         }
-
     }
 
 
-    /* EXIT */
+    /* =================================
+       EXIT
+    ================================= */
 
-    exit.x = W - 70;
-    exit.y = H/2;
+    exit.x=W-70;
+    exit.y=H/2;
 
-    /* LOOT */
 
-    const lootCount =
-        Math.min(3 + Math.floor(level/2),9);
+    /* =================================
+       LOOT
+    ================================= */
 
-    for(let i=0;i<lootCount;i++){
+    const lootCount=
+    Math.min(
+        2+
+        Math.floor(level/2),
+        8
+    );
 
-        const p = safePosition(15);
+    for(
+        let i=0;
+        i<lootCount;
+        i++
+    ){
+
+        const p=
+        safePosition(15);
 
         loot.push({
 
             x:p.x,
             y:p.y,
 
-            r:10,
+            r:11,
 
-            value:50 + level*15,
+            value:
+            50+level*10,
 
             collected:false
 
@@ -886,21 +896,32 @@ function createLevel(){
     }
 
 
-    /* TERMINALS */
+    /* =================================
+       TERMINALS
+    ================================= */
 
-    const terminalCount =
-        Math.min(1 + Math.floor(level/4),3);
+    const terminalCount=
+    Math.min(
+        1+
+        Math.floor(level/4),
+        3
+    );
 
-    for(let i=0;i<terminalCount;i++){
+    for(
+        let i=0;
+        i<terminalCount;
+        i++
+    ){
 
-        const p = safePosition(18);
+        const p=
+        safePosition(18);
 
         terminals.push({
 
             x:p.x,
             y:p.y,
 
-            r:16,
+            r:17,
 
             hacked:false
 
@@ -909,14 +930,25 @@ function createLevel(){
     }
 
 
-    /* GUARDS */
+    /* =================================
+       GUARDS
+    ================================= */
 
-    const guardCount =
-        Math.min(1 + Math.floor(level/2),8);
+    const guardCount=
+    Math.min(
+        1+
+        Math.floor(level/2),
+        8
+    );
 
-    for(let i=0;i<guardCount;i++){
+    for(
+        let i=0;
+        i<guardCount;
+        i++
+    ){
 
-        const p = safePosition(20);
+        const p=
+        safePosition(18);
 
         guards.push({
 
@@ -926,120 +958,71 @@ function createLevel(){
             r:14,
 
             speed:
-                45 + level*5,
+            45+level*4,
 
             angle:
-                Math.random()*Math.PI*2,
+            Math.random()*
+            Math.PI*2,
 
             viewDistance:
-                150 + level*5,
+            150+level*4,
 
             viewAngle:
-                Math.PI/3,
+            Math.PI/3,
 
             turnTimer:
-                1+Math.random()*2
+            1+Math.random()*2
 
         });
 
     }
 
     updateHUD();
-
 }
 
 
-/* =========================
+/* =================================
    HUD
-========================= */
+================================= */
 
 function updateHUD(){
 
-    document.getElementById("level").textContent =
-        level;
+    document.getElementById(
+        "level"
+    ).textContent=level;
 
-    document.getElementById("cash").textContent =
-        cash;
+    document.getElementById(
+        "cash"
+    ).textContent=cash;
 
-    document.getElementById("lives").textContent =
-        lives;
+    document.getElementById(
+        "lives"
+    ).textContent=lives;
 
-    document.getElementById("score").textContent =
-        score;
+    document.getElementById(
+        "score"
+    ).textContent=score;
 
 }
 
 
-/* =========================
+/* =================================
    MESSAGE
-========================= */
-
-let messageTimer = 0;
+================================= */
 
 function showMessage(text){
 
-    const message =
-        document.getElementById("message");
+    document.getElementById(
+        "message"
+    ).textContent=text;
 
-    message.textContent = text;
-
-    messageTimer = 2;
-
+    messageTimer=2;
 }
 
 
-/* =========================
-   DASH
-========================= */
-
-function dash(){
-
-    if(!running || paused || transitioningLevel)
-        return;
-
-    if(player.dashCooldown > 0)
-        return;
-
-    const movement = getMovement();
-
-    let x = movement.x;
-    let y = movement.y;
-
-    if(x===0 && y===0)
-        return;
-
-    player.x += x * 120;
-    player.y += y * 120;
-
-    player.x =
-        Math.max(
-            player.r,
-            Math.min(W-player.r,player.x)
-        );
-
-    player.y =
-        Math.max(
-            75,
-            Math.min(H-player.r,player.y)
-        );
-
-    player.dashCooldown = 2;
-
-    player.invincible = .3;
-
-    spawnParticles(
-        player.x,
-        player.y,
-        "#19f7ff",
-        20
-    );
-
-}
-
-
-/* =========================
+/* =================================
    HACK
-========================= */
+================================= */
 
 function hack(){
 
@@ -1051,199 +1034,294 @@ function hack(){
         if(terminal.hacked)
             continue;
 
-        const d =
-            Math.hypot(
-                player.x-terminal.x,
-                player.y-terminal.y
+        const d=
+        Math.hypot(
+            player.x-terminal.x,
+            player.y-terminal.y
+        );
+
+        if(d<70){
+
+            terminal.hacked=true;
+
+            score+=100;
+
+            showMessage(
+                "TERMINAL HACKED +100"
             );
-
-        if(d < 65){
-
-            terminal.hacked = true;
-
-            score += 100;
-
-            showMessage("TERMINAL HACKED +100");
 
             spawnParticles(
                 terminal.x,
                 terminal.y,
                 "#ff2bd6",
-                25
+                20
             );
 
             updateHUD();
 
             return;
-
         }
-
     }
 
 }
 
 
-/* =========================
+/* =================================
+   DASH
+================================= */
+
+function dash(){
+
+    if(
+        !running ||
+        paused ||
+        transitioningLevel
+    )
+        return;
+
+    if(player.dashCooldown>0)
+        return;
+
+    const move=getMovement();
+
+    if(
+        move.x===0 &&
+        move.y===0
+    )
+        return;
+
+    let newX=
+    player.x+move.x*130;
+
+    let newY=
+    player.y+move.y*130;
+
+    if(
+        !isBlocked(
+            newX,
+            player.y,
+            player.r
+        )
+    )
+        player.x=newX;
+
+    if(
+        !isBlocked(
+            player.x,
+            newY,
+            player.r
+        )
+    )
+        player.y=newY;
+
+    player.x=
+    Math.max(
+        player.r,
+        Math.min(
+            W-player.r,
+            player.x
+        )
+    );
+
+    player.y=
+    Math.max(
+        65,
+        Math.min(
+            H-player.r,
+            player.y
+        )
+    );
+
+    player.dashCooldown=2;
+
+    player.invincible=.5;
+
+    spawnParticles(
+        player.x,
+        player.y,
+        "#19f7ff",
+        20
+    );
+}
+
+
+/* =================================
    BUTTONS
-========================= */
+================================= */
 
-document.getElementById("dashButton")
-.addEventListener("pointerdown",e=>{
-
+document.getElementById(
+"hackButton"
+).addEventListener(
+"pointerdown",
+e=>{
     e.preventDefault();
-
-    dash();
-
-});
-
-
-document.getElementById("hackButton")
-.addEventListener("pointerdown",e=>{
-
-    e.preventDefault();
-
     hack();
+});
+
+
+document.getElementById(
+"dashButton"
+).addEventListener(
+"pointerdown",
+e=>{
+    e.preventDefault();
+    dash();
+});
+
+
+document.getElementById(
+"pauseButton"
+).addEventListener(
+"pointerdown",
+e=>{
+
+    e.preventDefault();
+
+    if(!running)
+        return;
+
+    paused=!paused;
+
+    e.target.textContent=
+    paused ? "▶" : "Ⅱ";
 
 });
 
 
-document.getElementById("pauseButton")
-.addEventListener("pointerdown",e=>{
+document.getElementById(
+"startButton"
+).addEventListener(
+"pointerdown",
+e=>{
 
     e.preventDefault();
-
-    if(!running) return;
-
-    paused = !paused;
-
-    document.getElementById("pauseButton")
-        .textContent =
-        paused ? "▶" : "Ⅱ";
-
-});
-
-
-document.getElementById("startButton")
-.addEventListener("pointerdown",e=>{
-
-    e.preventDefault();
-
     startGame();
 
 });
 
 
-document.getElementById("restartButton")
-.addEventListener("pointerdown",e=>{
+document.getElementById(
+"restartButton"
+).addEventListener(
+"pointerdown",
+e=>{
 
     e.preventDefault();
-
     startGame();
 
 });
 
 
-/* =========================
-   START GAME
-========================= */
+/* =================================
+   START
+================================= */
 
 function startGame(){
 
-    document.getElementById("startScreen")
-        .classList.add("hidden");
+    document.getElementById(
+        "startScreen"
+    ).classList.add("hidden");
 
-    document.getElementById("gameOverScreen")
-        .classList.add("hidden");
+    document.getElementById(
+        "gameOverScreen"
+    ).classList.add("hidden");
 
-    running = true;
+    running=true;
+    paused=false;
 
-    paused = false;
+    transitioningLevel=false;
 
-    transitioningLevel = false;
+    level=1;
+    score=0;
+    cash=0;
+    lives=3;
 
-    level = 1;
-
-    score = 0;
-
-    cash = 0;
-
-    lives = 3;
-
-    alertLevel = 0;
-
-    alarm = false;
-
-    player.speed = 190;
-
-    player.dashCooldown = 0;
-
-    player.invincible = 1;
-
-    player.vx = 0;
-
-    player.vy = 0;
+    player.speed=190;
+    player.dashCooldown=0;
+    player.invincible=1;
 
     createLevel();
 
     updateHUD();
-
 }
 
 
-/* =========================
-   PLAYER MOVEMENT
-========================= */
+/* =================================
+   MOVE PLAYER
+================================= */
 
 function movePlayer(dt){
 
     if(transitioningLevel)
         return;
 
-    const movement =
-        getMovement();
+    const move=
+    getMovement();
 
-    player.vx =
-        movement.x * player.speed;
+    player.vx=
+    move.x*player.speed;
 
-    player.vy =
-        movement.y * player.speed;
+    player.vy=
+    move.y*player.speed;
 
-    const newX =
-        player.x + player.vx * dt;
+    const newX=
+    player.x+
+    player.vx*dt;
 
-    const newY =
-        player.y + player.vy * dt;
+    const newY=
+    player.y+
+    player.vy*dt;
 
-    if(!isBlocked(newX,player.y,player.r)){
 
-        player.x = newX;
+    if(
+        !isBlocked(
+            newX,
+            player.y,
+            player.r
+        )
+    ){
+
+        player.x=newX;
 
     }
 
-    if(!isBlocked(player.x,newY,player.r)){
 
-        player.y = newY;
+    if(
+        !isBlocked(
+            player.x,
+            newY,
+            player.r
+        )
+    ){
+
+        player.y=newY;
 
     }
 
-    player.x =
-        Math.max(
-            player.r,
-            Math.min(W-player.r,player.x)
-        );
 
-    player.y =
-        Math.max(
-            65,
-            Math.min(H-player.r,player.y)
-        );
+    player.x=
+    Math.max(
+        player.r,
+        Math.min(
+            W-player.r,
+            player.x
+        )
+    );
 
+    player.y=
+    Math.max(
+        65,
+        Math.min(
+            H-player.r,
+            player.y
+        )
+    );
 }
 
 
-/* =========================
-   LOOT
-========================= */
+/* =================================
+   COLLECT LOOT
+================================= */
 
 function collectLoot(){
 
@@ -1252,319 +1330,392 @@ function collectLoot(){
         if(item.collected)
             continue;
 
-        const distance =
-            Math.hypot(
-                player.x-item.x,
-                player.y-item.y
-            );
+        const d=
+        Math.hypot(
+            player.x-item.x,
+            player.y-item.y
+        );
 
-        if(distance < player.r + item.r){
+        if(
+            d<
+            player.r+item.r
+        ){
 
-            item.collected = true;
+            item.collected=true;
 
-            cash += item.value;
-
-            score += item.value;
+            cash+=item.value;
+            score+=item.value;
 
             showMessage(
-                "LOOT +" + item.value
+                "💰 LOOT +"+item.value
             );
 
             spawnParticles(
                 item.x,
                 item.y,
                 "#ffe600",
-                18
+                15
             );
 
             updateHUD();
-
         }
-
     }
-
 }
 
 
-/* =========================
-   EXIT
-========================= */
+/* =================================
+   EXIT CHECK — FIXED
+================================= */
 
 function checkExit(){
 
-    const distance =
-        Math.hypot(
-            player.x-exit.x,
-            player.y-exit.y
-        );
+    const distance=
+    Math.hypot(
+        player.x-exit.x,
+        player.y-exit.y
+    );
 
-    const allLoot =
-        loot.every(item=>item.collected);
+
+    const allLootCollected=
+    loot.length>0 &&
+    loot.every(
+        item=>item.collected
+    );
+
 
     if(
-        distance < player.r + exit.r &&
-        allLoot &&
-        !transitioningLevel
+        distance<
+        player.r+exit.r
     ){
 
-        levelComplete();
+        /*
+           EXIT LOCKED
+        */
 
+        if(!allLootCollected){
+
+            showMessage(
+                "🔒 COLLECT ALL LOOT FIRST!"
+            );
+
+            return;
+        }
+
+
+        /*
+           EXIT OPEN
+        */
+
+        if(!transitioningLevel){
+
+            levelComplete();
+
+        }
     }
-
 }
 
 
-/* =========================
-   LEVEL COMPLETE
-========================= */
+/* =================================
+   LEVEL COMPLETE — FIXED
+================================= */
 
 function levelComplete(){
 
     if(transitioningLevel)
         return;
 
-    transitioningLevel = true;
+    transitioningLevel=true;
 
-    const reward = cash * 2;
+    player.vx=0;
+    player.vy=0;
 
-    score += reward;
+    const reward=
+    cash*2;
+
+    score+=reward;
 
     showMessage(
-        "HEIST COMPLETE! +" + reward
+        "🚪 HEIST COMPLETE! +"+
+        reward
     );
 
-    player.vx = 0;
-    player.vy = 0;
+    spawnParticles(
+        exit.x,
+        exit.y,
+        "#19f7ff",
+        50
+    );
+
 
     setTimeout(()=>{
 
         if(!running){
 
-            transitioningLevel = false;
-
+            transitioningLevel=false;
             return;
 
         }
 
-        /* EXACTLY ONE LEVEL UP */
 
-        level++;
+        /*
+           IMPORTANT:
+           ONLY INCREASE BY 1
+        */
 
-        if(level < 1)
-            level = 1;
+        level=level+1;
+
+
+        /*
+           NEVER ALLOW
+           LEVEL 74 BUG
+        */
+
+        if(level<1)
+            level=1;
+
 
         createLevel();
 
-        transitioningLevel = false;
+        transitioningLevel=false;
 
         updateHUD();
 
-    },1200);
+        showMessage(
+            "LEVEL "+level
+        );
 
+    },1200);
 }
 
 
-/* =========================
+/* =================================
    GUARDS
-========================= */
+================================= */
 
 function updateGuards(dt){
 
-    alarm = false;
+    alarm=false;
 
     for(const guard of guards){
 
-        guard.turnTimer -= dt;
+        guard.turnTimer-=dt;
 
-        if(guard.turnTimer <= 0){
+        if(guard.turnTimer<=0){
 
-            guard.turnTimer =
-                1+Math.random()*2;
+            guard.turnTimer=
+            1+Math.random()*2;
 
-            guard.angle +=
-                (Math.random()-.5)*1.8;
-
+            guard.angle+=
+            (Math.random()-.5)*1.5;
         }
 
-        const dx =
-            player.x-guard.x;
 
-        const dy =
-            player.y-guard.y;
+        const dx=
+        player.x-guard.x;
 
-        const distance =
-            Math.hypot(dx,dy);
+        const dy=
+        player.y-guard.y;
 
-        const playerAngle =
-            Math.atan2(dy,dx);
+        const distance=
+        Math.hypot(dx,dy);
 
-        let angleDifference =
-            playerAngle-guard.angle;
 
-        while(angleDifference>Math.PI)
-            angleDifference-=Math.PI*2;
+        const playerAngle=
+        Math.atan2(dy,dx);
 
-        while(angleDifference<-Math.PI)
-            angleDifference+=Math.PI*2;
+        let diff=
+        playerAngle-guard.angle;
 
-        const seesPlayer =
-            distance < guard.viewDistance &&
-            Math.abs(angleDifference) <
-                guard.viewAngle/2 &&
-            player.invisibility <= 0;
 
-        if(seesPlayer){
+        while(diff>Math.PI)
+            diff-=Math.PI*2;
 
-            alarm = true;
+        while(diff<-Math.PI)
+            diff+=Math.PI*2;
 
-            alertLevel += dt * 1.2;
 
-            guard.angle =
-                playerAngle;
+        const sees=
+        distance<
+        guard.viewDistance &&
+        Math.abs(diff)<
+        guard.viewAngle/2 &&
+        player.invisibility<=0;
 
-            const speed =
-                guard.speed *
-                (1 + alertLevel*.15);
+
+        if(sees){
+
+            alarm=true;
+
+            alertLevel+=dt;
+
+
+            guard.angle=
+            playerAngle;
+
 
             if(distance>30){
 
-                const nx = dx/distance;
-                const ny = dy/distance;
+                const nx=
+                dx/distance;
 
-                const newX =
-                    guard.x + nx*speed*dt;
+                const ny=
+                dy/distance;
 
-                const newY =
-                    guard.y + ny*speed*dt;
+                const speed=
+                guard.speed;
 
-                if(!isBlocked(newX,guard.y,guard.r))
-                    guard.x = newX;
+                const newX=
+                guard.x+
+                nx*speed*dt;
 
-                if(!isBlocked(guard.x,newY,guard.r))
-                    guard.y = newY;
+                const newY=
+                guard.y+
+                ny*speed*dt;
+
+
+                if(
+                    !isBlocked(
+                        newX,
+                        guard.y,
+                        guard.r
+                    )
+                )
+                    guard.x=newX;
+
+
+                if(
+                    !isBlocked(
+                        guard.x,
+                        newY,
+                        guard.r
+                    )
+                )
+                    guard.y=newY;
 
             }
 
         }
 
+
         if(
-            distance <
-            player.r + guard.r + 3 &&
-            player.invincible <= 0
+            distance<
+            player.r+
+            guard.r+
+            3 &&
+            player.invincible<=0
         ){
 
             loseLife();
 
         }
-
     }
+
 
     if(!alarm){
 
-        alertLevel -= dt*.5;
-
-        alertLevel =
-            Math.max(0,alertLevel);
+        alertLevel=
+        Math.max(
+            0,
+            alertLevel-dt
+        );
 
     }
-
 }
 
 
-/* =========================
+/* =================================
    LOSE LIFE
-========================= */
+================================= */
 
 function loseLife(){
 
-    if(player.invincible > 0)
+    if(player.invincible>0)
         return;
 
     lives--;
 
     updateHUD();
 
-    spawnParticles(
-        player.x,
-        player.y,
-        "#ff1744",
-        30
-    );
-
-    if(lives <= 0){
+    if(lives<=0){
 
         gameOver();
-
         return;
 
     }
 
-    showMessage("CAUGHT! -1 LIFE");
+    showMessage(
+        "🚨 CAUGHT! -1 LIFE"
+    );
 
-    player.x = 70;
-    player.y = H/2;
+    player.x=70;
+    player.y=H/2;
 
-    player.invincible = 2;
-
+    player.invincible=2;
 }
 
 
-/* =========================
+/* =================================
    GAME OVER
-========================= */
+================================= */
 
 function gameOver(){
 
-    running = false;
+    running=false;
 
-    paused = false;
+    document.getElementById(
+        "finalScore"
+    ).textContent=score;
 
-    document.getElementById("finalScore")
-        .textContent = score;
+    document.getElementById(
+        "finalLevel"
+    ).textContent=level;
 
-    document.getElementById("finalLevel")
-        .textContent = level;
-
-    document.getElementById("gameOverScreen")
-        .classList.remove("hidden");
-
+    document.getElementById(
+        "gameOverScreen"
+    ).classList.remove("hidden");
 }
 
 
-/* =========================
+/* =================================
    PARTICLES
-========================= */
+================================= */
 
-function spawnParticles(x,y,color,count){
+function spawnParticles(
+x,y,color,count
+){
 
-    for(let i=0;i<count;i++){
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
 
-        const angle =
-            Math.random()*Math.PI*2;
+        const angle=
+        Math.random()*
+        Math.PI*2;
 
-        const speed =
-            40+Math.random()*120;
+        const speed=
+        40+
+        Math.random()*100;
 
         particles.push({
 
-            x,
-            y,
+            x:x,
+            y:y,
 
             vx:
-                Math.cos(angle)*speed,
+            Math.cos(angle)*speed,
 
             vy:
-                Math.sin(angle)*speed,
+            Math.sin(angle)*speed,
 
             life:
-                .5+Math.random()*.7,
+            .5+
+            Math.random()*.6,
 
-            color
-
+            color:color
         });
-
     }
-
 }
 
 
@@ -1572,47 +1723,55 @@ function updateParticles(dt){
 
     for(const p of particles){
 
-        p.x += p.vx*dt;
-        p.y += p.vy*dt;
+        p.x+=p.vx*dt;
+        p.y+=p.vy*dt;
 
-        p.vx *= .96;
-        p.vy *= .96;
+        p.vx*=.96;
+        p.vy*=.96;
 
-        p.life -= dt;
-
+        p.life-=dt;
     }
 
-    particles =
-        particles.filter(p=>p.life>0);
-
+    particles=
+    particles.filter(
+        p=>p.life>0
+    );
 }
 
 
-/* =========================
+/* =================================
    DRAW
-========================= */
+================================= */
 
 function draw(){
 
-    ctx.clearRect(0,0,W,H);
+    ctx.clearRect(
+        0,0,W,H
+    );
+
 
     /* BACKGROUND */
 
-    ctx.fillStyle = "#050510";
+    ctx.fillStyle="#050510";
 
-    ctx.fillRect(0,0,W,H);
+    ctx.fillRect(
+        0,0,W,H
+    );
 
 
     /* GRID */
 
-    ctx.strokeStyle =
-        "rgba(25,247,255,.08)";
+    ctx.strokeStyle=
+    "rgba(25,247,255,.07)";
 
-    ctx.lineWidth = 1;
+    ctx.lineWidth=1;
 
-    const grid = 40;
 
-    for(let x=0;x<W;x+=grid){
+    for(
+        let x=0;
+        x<W;
+        x+=40
+    ){
 
         ctx.beginPath();
 
@@ -1620,10 +1779,14 @@ function draw(){
         ctx.lineTo(x,H);
 
         ctx.stroke();
-
     }
 
-    for(let y=0;y<H;y+=grid){
+
+    for(
+        let y=0;
+        y<H;
+        y+=40
+    ){
 
         ctx.beginPath();
 
@@ -1631,7 +1794,6 @@ function draw(){
         ctx.lineTo(W,y);
 
         ctx.stroke();
-
     }
 
 
@@ -1639,8 +1801,8 @@ function draw(){
 
     for(const wall of walls){
 
-        ctx.fillStyle =
-            "rgba(20,25,45,.95)";
+        ctx.fillStyle=
+        "#14192d";
 
         ctx.fillRect(
             wall.x,
@@ -1649,10 +1811,8 @@ function draw(){
             wall.h
         );
 
-        ctx.strokeStyle =
-            "#19f7ff";
-
-        ctx.lineWidth = 2;
+        ctx.strokeStyle=
+        "#19f7ff";
 
         ctx.strokeRect(
             wall.x,
@@ -1660,11 +1820,19 @@ function draw(){
             wall.w,
             wall.h
         );
-
     }
 
 
-    /* EXIT */
+    /* =================================
+       EXIT — FIXED VISUAL
+    ================================= */
+
+    const allLootCollected=
+    loot.length>0 &&
+    loot.every(
+        item=>item.collected
+    );
+
 
     ctx.beginPath();
 
@@ -1676,26 +1844,53 @@ function draw(){
         Math.PI*2
     );
 
-    ctx.fillStyle =
-        "rgba(25,247,255,.15)";
+
+    /*
+       GREEN = OPEN
+       RED = LOCKED
+    */
+
+    ctx.fillStyle=
+    allLootCollected
+    ? "rgba(0,255,100,.25)"
+    : "rgba(255,30,60,.20)";
 
     ctx.fill();
 
-    ctx.strokeStyle =
-        "#19f7ff";
 
-    ctx.lineWidth = 3;
+    ctx.strokeStyle=
+    allLootCollected
+    ? "#00ff66"
+    : "#ff304f";
+
+    ctx.lineWidth=4;
+
+    ctx.shadowBlur=20;
+
+    ctx.shadowColor=
+    allLootCollected
+    ? "#00ff66"
+    : "#ff304f";
 
     ctx.stroke();
 
-    ctx.fillStyle = "#19f7ff";
+    ctx.shadowBlur=0;
 
-    ctx.font = "bold 12px Arial";
 
-    ctx.textAlign = "center";
+    ctx.fillStyle=
+    allLootCollected
+    ? "#00ff66"
+    : "#ff304f";
+
+    ctx.font=
+    "bold 11px Arial";
+
+    ctx.textAlign="center";
 
     ctx.fillText(
-        "EXIT",
+        allLootCollected
+        ? "EXIT"
+        : "LOCKED",
         exit.x,
         exit.y+4
     );
@@ -1718,16 +1913,14 @@ function draw(){
             Math.PI*2
         );
 
-        ctx.fillStyle = "#ffe600";
+        ctx.fillStyle="#ffe600";
 
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor = "#ffe600";
+        ctx.shadowBlur=15;
+        ctx.shadowColor="#ffe600";
 
         ctx.fill();
 
-        ctx.shadowBlur = 0;
-
+        ctx.shadowBlur=0;
     }
 
 
@@ -1745,33 +1938,27 @@ function draw(){
             Math.PI*2
         );
 
-        ctx.fillStyle =
-            terminal.hacked
-            ? "#222"
-            : "#ff2bd6";
-
-        ctx.shadowBlur =
-            terminal.hacked ? 0 : 15;
-
-        ctx.shadowColor =
-            "#ff2bd6";
+        ctx.fillStyle=
+        terminal.hacked
+        ? "#333"
+        : "#ff2bd6";
 
         ctx.fill();
 
-        ctx.shadowBlur = 0;
+        ctx.fillStyle="white";
 
-        ctx.fillStyle = "white";
+        ctx.font=
+        "bold 9px Arial";
 
-        ctx.font = "10px Arial";
-
-        ctx.textAlign = "center";
+        ctx.textAlign="center";
 
         ctx.fillText(
-            terminal.hacked ? "OK" : "HACK",
+            terminal.hacked
+            ? "OK"
+            : "HACK",
             terminal.x,
             terminal.y+3
         );
-
     }
 
 
@@ -1779,7 +1966,7 @@ function draw(){
 
     for(const guard of guards){
 
-        /* VISION CONE */
+        /* VISION */
 
         ctx.beginPath();
 
@@ -1792,16 +1979,18 @@ function draw(){
             guard.x,
             guard.y,
             guard.viewDistance,
-            guard.angle-guard.viewAngle/2,
-            guard.angle+guard.viewAngle/2
+            guard.angle-
+            guard.viewAngle/2,
+            guard.angle+
+            guard.viewAngle/2
         );
 
         ctx.closePath();
 
-        ctx.fillStyle =
-            alarm
-            ? "rgba(255,20,70,.18)"
-            : "rgba(255,50,100,.08)";
+        ctx.fillStyle=
+        alarm
+        ? "rgba(255,0,50,.2)"
+        : "rgba(255,0,50,.07)";
 
         ctx.fill();
 
@@ -1818,16 +2007,14 @@ function draw(){
             Math.PI*2
         );
 
-        ctx.fillStyle = "#ff1744";
+        ctx.fillStyle="#ff1744";
 
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor = "#ff1744";
+        ctx.shadowBlur=15;
+        ctx.shadowColor="#ff1744";
 
         ctx.fill();
 
-        ctx.shadowBlur = 0;
-
+        ctx.shadowBlur=0;
     }
 
 
@@ -1843,86 +2030,88 @@ function draw(){
         Math.PI*2
     );
 
-    ctx.fillStyle =
-        player.invincible > 0
-        ? "#ffffff"
-        : "#19f7ff";
+    ctx.fillStyle=
+    player.invincible>0
+    ? "white"
+    : "#19f7ff";
 
-    ctx.shadowBlur = 20;
-
-    ctx.shadowColor = "#19f7ff";
+    ctx.shadowBlur=20;
+    ctx.shadowColor="#19f7ff";
 
     ctx.fill();
 
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur=0;
 
 
     /* PARTICLES */
 
     for(const p of particles){
 
-        ctx.globalAlpha =
-            Math.max(0,p.life);
+        ctx.globalAlpha=
+        Math.max(0,p.life);
 
-        ctx.fillStyle = p.color;
+        ctx.fillStyle=p.color;
 
         ctx.fillRect(
             p.x,
             p.y,
-            3,
-            3
+            4,
+            4
         );
-
     }
 
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha=1;
 
 
     /* ALARM */
 
     if(alarm){
 
-        ctx.fillStyle =
-            "rgba(255,0,50,.08)";
+        ctx.fillStyle=
+        "rgba(255,0,50,.08)";
 
         ctx.fillRect(
             0,0,W,H
         );
 
-        ctx.fillStyle = "#ff1744";
+        ctx.fillStyle="#ff1744";
 
-        ctx.font = "bold 20px Arial";
+        ctx.font=
+        "bold 20px Arial";
 
-        ctx.textAlign = "center";
+        ctx.textAlign="center";
 
         ctx.fillText(
             "🚨 ALARM 🚨",
             W/2,
-            100
+            105
         );
-
     }
-
 }
 
 
-/* =========================
+/* =================================
    GAME LOOP
-========================= */
+================================= */
 
-let lastTime = performance.now();
+let lastTime=
+performance.now();
 
 function gameLoop(now){
 
-    const dt =
-        Math.min(
-            (now-lastTime)/1000,
-            .033
-        );
+    const dt=
+    Math.min(
+        (now-lastTime)/1000,
+        .033
+    );
 
-    lastTime = now;
+    lastTime=now;
 
-    if(running && !paused){
+
+    if(
+        running &&
+        !paused
+    ){
 
         movePlayer(dt);
 
@@ -1934,82 +2123,67 @@ function gameLoop(now){
 
         updateParticles(dt);
 
-        player.dashCooldown =
-            Math.max(
-                0,
-                player.dashCooldown-dt
-            );
 
-        player.invincible =
-            Math.max(
-                0,
-                player.invincible-dt
-            );
+        player.dashCooldown=
+        Math.max(
+            0,
+            player.dashCooldown-dt
+        );
 
-        player.invisibility =
-            Math.max(
-                0,
-                player.invisibility-dt
-            );
+
+        player.invincible=
+        Math.max(
+            0,
+            player.invincible-dt
+        );
 
     }
+
 
     if(messageTimer>0){
 
-        messageTimer -= dt;
+        messageTimer-=dt;
 
         if(messageTimer<=0){
 
-            document.getElementById("message")
-                .textContent = "";
+            document.getElementById(
+                "message"
+            ).textContent="";
 
         }
-
     }
+
 
     draw();
 
-    requestAnimationFrame(gameLoop);
-
+    requestAnimationFrame(
+        gameLoop
+    );
 }
 
-requestAnimationFrame(gameLoop);
+requestAnimationFrame(
+gameLoop
+);
 
 
-/* =========================
-   IPAD SAFETY
-========================= */
+/* =================================
+   IPAD TOUCH PROTECTION
+================================= */
 
 document.addEventListener(
-    "touchmove",
-    function(e){
-        e.preventDefault();
-    },
-    {passive:false}
+"touchmove",
+e=>{
+    e.preventDefault();
+},
+{passive:false}
 );
 
 document.addEventListener(
-    "gesturestart",
-    function(e){
-        e.preventDefault();
-    },
-    {passive:false}
-);
-
-document.addEventListener(
-    "gesturechange",
-    function(e){
-        e.preventDefault();
-    },
-    {passive:false}
-);
-
-document.addEventListener(
-    "gestureend",
-    function(e){
-        e.preventDefault();
-    },
-    {passive:false}
+"gesturestart",
+e=>{
+    e.preventDefault();
+},
+{passive:false}
 );
 
 </script>
